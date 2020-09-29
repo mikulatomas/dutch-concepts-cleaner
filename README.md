@@ -1,6 +1,8 @@
 # py-dutch-normative-data
 Python script for download Dutch normative data for semantic concepts dataset and clean the original `.csv`.
 
+Removed columns/rows: Dutch names, empty values.
+
 ## Requirements
 `pandas`
 
