@@ -1,11 +1,12 @@
 # py-dutch-normative-data
-Python transformator to cleaner csv for Dutch normative data for semantic concepts.
+Python script for download Dutch normative data for semantic concepts dataset and clean the original `.csv`.
 
 ## Requirements
 `pandas`
 
 ## How to use
 ```
+pip install -r requirements.txt
 chmod +x run_all.sh
 ./run_all.sh
 ```
