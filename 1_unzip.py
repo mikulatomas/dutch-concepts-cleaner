@@ -12,8 +12,8 @@ for filepath in glob(os.path.join('download', '*.zip')):
 for subdir, dirs, files in os.walk('dataset'):
     for file in files:
         zippath = os.path.join(subdir, file)
-        print(zippath)
         if '.zip' in zippath:
+            print(f"Extracting: {zippath}")
             new_dir_name = file.replace('.zip', '')
             if not os.path.exists(os.path.join(subdir, new_dir_name)):
                 os.makedirs(os.path.join(subdir, new_dir_name))

@@ -5,7 +5,12 @@ Python transformator to cleaner csv for Dutch normative data for semantic concep
 `pandas`
 
 ## How to use
-Run each python scripts one by one. Cleaned csv files will appear in `clean_csv` folder.
+```
+chmod +x run_all.sh
+./run_all.sh
+```
+
+Or run each python scripts one by one. Cleaned csv files will appear in `clean_csv` folder.
 
 ## Original paper
 > De Deyne, Simon, et al. "Exemplar by feature applicability matrices and other Dutch normative data for semantic concepts." Behavior research methods 40.4 (2008): 1030-1048.

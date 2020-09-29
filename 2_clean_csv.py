@@ -10,7 +10,7 @@ for subdir, dirs, files in os.walk('dataset'):
         if '.CSV' in filepath:
             target_dir = subdir.replace('dataset/cvsdata/', '')
             target_dir = os.path.join('clean_csv', target_dir)
-            print(filepath)
+            print(f"Cleaning: {zippath}")
             if not os.path.exists(target_dir):
                 os.makedirs(target_dir)
 
