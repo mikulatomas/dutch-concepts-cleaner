@@ -1,8 +1,13 @@
 import os
 import pandas as pd
+import json
 
 if not os.path.exists('clean_csv'):
     os.makedirs('clean_csv')
+
+
+with open('translation.json') as f:
+    translation = json.load(f)
 
 for subdir, dirs, files in os.walk('dataset'):
     for file in files:
@@ -23,6 +28,9 @@ for subdir, dirs, files in os.walk('dataset'):
                     df = df.drop(0, axis=1)
                     df.columns = range(len(df.columns))
                     df.index.name = ''
+                    df.columns = [''] * len(df.columns)
+                    df = df.rename(index=translation)
+                    write_headers = False
                 else:
                     df = pd.read_csv(filepath, encoding="ISO-8859-1",
                                      index_col=1, header=1)
@@ -33,7 +41,9 @@ for subdir, dirs, files in os.walk('dataset'):
                     df = df.reset_index().dropna()
                     df.index = df[df.columns[0]]
                     df = df.drop(df.columns[0], axis=1)
+                    df = df.rename(columns=translation)
                     df.index.name = ''
+                    write_headers = True
 
             elif 'exemplar judgments' in filepath:
                 df = pd.read_csv(filepath, encoding="ISO-8859-1", nrows=1)
@@ -44,6 +54,8 @@ for subdir, dirs, files in os.walk('dataset'):
                 df = df.dropna(how='all', axis=1)
                 df = df.dropna(how='all', axis=0)
                 df = df.drop(df.columns[0], axis=1)
+                df = df.rename(index=translation)
+                write_headers = True
 
             elif 'pairwise similarities' in filepath:
                 if 'Birds' in filepath or 'Clothing' in filepath or 'Fish' in filepath or 'Musical' in filepath or 'Vehicles' in filepath:
@@ -68,7 +80,11 @@ for subdir, dirs, files in os.walk('dataset'):
                     df = df.drop('exemplar DUTCH', axis=0)
                 except:
                     pass
-
+                df = df.dropna(how='all', axis=1)
+                df = df.dropna(how='all', axis=0)
                 df.index.name = ''
+                df = df.rename(index=translation, columns=translation)
+                write_headers = True
 
-            df.to_csv(os.path.join(target_dir, os.path.basename(filepath)))
+            df.to_csv(os.path.join(target_dir, os.path.basename(
+                filepath)), header=write_headers)
