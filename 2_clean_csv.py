@@ -25,7 +25,7 @@ for subdir, dirs, files in os.walk('dataset'):
                     df.index.name = ''
                 else:
                     df = pd.read_csv(filepath, encoding="ISO-8859-1",
-                                     index_col=1, header=0)
+                                     index_col=1, header=1)
                     df = df.dropna(how='all', axis=1)
                     df = df.dropna(how='all', axis=0)
                     df = df.drop(df.columns[0], axis=1)
@@ -40,25 +40,27 @@ for subdir, dirs, files in os.walk('dataset'):
                 df = df.dropna(how='all', axis=1)
                 columns = df.columns
                 df = pd.read_csv(filepath, encoding="ISO-8859-1",
-                                 usecols=columns, index_col=1)
+                                 usecols=columns, index_col=0)
                 df = df.dropna(how='all', axis=1)
                 df = df.dropna(how='all', axis=0)
                 df = df.drop(df.columns[0], axis=1)
 
             elif 'pairwise similarities' in filepath:
                 df = pd.read_csv(
-                    filepath, encoding="ISO-8859-1", nrows=1, header=None)
+                    filepath, encoding="ISO-8859-1", nrows=2, header=None)
                 df = df.dropna(how='all', axis=1)
                 columns = df.columns
+
                 df = pd.read_csv(filepath, encoding="ISO-8859-1",
-                                 usecols=columns, header=0)
+                                 usecols=columns, header=1)
                 df = df.dropna(how='all', axis=1)
                 df = df.dropna(how='all', axis=0)
                 df = df.reset_index().dropna()
-                df.index = df[df.columns[0]]
-                df = df.drop(df.columns[0], axis=1)
-                df.index = df[df.columns[0]]
-                df = df.drop(df.columns[0], axis=1)
+                df = df.drop('index', axis=1)
+                df.index = df['Unnamed: 1']
+                df = df.drop('Unnamed: 1', axis=1)
+                df = df.drop('exemplar DUTCH', axis=1)
+
                 df.index.name = ''
 
             df.to_csv(os.path.join(target_dir, os.path.basename(filepath)))
