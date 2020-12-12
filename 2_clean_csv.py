@@ -90,4 +90,4 @@ for subdir, dirs, files in os.walk('dataset'):
 
             filename = filename.replace('Features', 'Feature')
 
-            df.to_csv(os.path.join(target_dir, ), header=write_headers)
+            df.to_csv(os.path.join(target_dir, filename), header=write_headers)
