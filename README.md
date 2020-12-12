@@ -18,6 +18,12 @@ Python script for download Dutch normative data for semantic concepts dataset an
 <     "camion": "camion",
 ---
 >     "camion": "truck",
+178c178
+<     "koevoet": "jimmy bar",
+---
+>     "koevoet": "crowbar",
+199d198
+<     "libel (langpootmug)": "dragonfly",
 ```
 
 ## Requirements
