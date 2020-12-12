@@ -1,7 +1,24 @@
 # py-dutch-normative-data
 Python script for download Dutch normative data for semantic concepts dataset and clean the original `.csv`.
 
-Removed columns/rows: Dutch names, empty values.
+## Changes
+* Removed columns/rows: Dutch names, empty values.
+* Unified filenames ('Feature' vs 'Features')
+* Translated into english (avoid duplicates in english translation, more in `translation.json`).
+
+## Translation diff
+```
+60,61c60,61
+<     "bromfiets": "moped",
+<     "brommer": "scooter",
+---
+>     "bromfiets": "scooter",
+>     "brommer": "motorbike",
+64c64
+<     "camion": "camion",
+---
+>     "camion": "truck",
+```
 
 ## Requirements
 `pandas`
