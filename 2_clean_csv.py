@@ -86,5 +86,8 @@ for subdir, dirs, files in os.walk('dataset'):
                 df = df.rename(index=translation, columns=translation)
                 write_headers = True
 
-            df.to_csv(os.path.join(target_dir, os.path.basename(
-                filepath)), header=write_headers)
+            filename = os.path.basename(filepath)
+
+            filename = filename.replace('Features', 'Feature')
+
+            df.to_csv(os.path.join(target_dir, ), header=write_headers)
