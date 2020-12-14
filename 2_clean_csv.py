@@ -6,8 +6,11 @@ if not os.path.exists('clean_csv'):
     os.makedirs('clean_csv')
 
 
-with open('translation.json') as f:
+with open(os.path.join('translation', 'translation.json')) as f:
     translation = json.load(f)
+
+with open(os.path.join('translation', 'translation_attributes.json')) as f:
+    translation_attributes = json.load(f)
 
 for subdir, dirs, files in os.walk('dataset'):
     for file in files:
@@ -22,18 +25,19 @@ for subdir, dirs, files in os.walk('dataset'):
             if 'exemplar feature judgments' in filepath:
                 if 'categoryFeatureImportanceRatings' in filepath or 'exemplarFeatureImportanceRatings' in filepath:
                     df = pd.read_csv(filepath, encoding="ISO-8859-1",
-                                     header=None, index_col=1)
+                                     header=None, index_col=0)
                     df = df.dropna(how='all', axis=1)
                     df = df.dropna(how='all', axis=0)
-                    df = df.drop(0, axis=1)
+                    df = df.drop(1, axis=1)
                     df.columns = range(len(df.columns))
                     df.index.name = ''
                     df.columns = [''] * len(df.columns)
-                    df = df.rename(index=translation)
+                    df = df.rename(index=translation_attributes,
+                                   columns=translation)
                     write_headers = False
                 else:
                     df = pd.read_csv(filepath, encoding="ISO-8859-1",
-                                     index_col=1, header=1)
+                                     index_col=0, header=1)
                     df = df.dropna(how='all', axis=1)
                     df = df.dropna(how='all', axis=0)
                     df = df.drop(df.columns[0], axis=1)
@@ -41,7 +45,8 @@ for subdir, dirs, files in os.walk('dataset'):
                     df = df.reset_index().dropna()
                     df.index = df[df.columns[0]]
                     df = df.drop(df.columns[0], axis=1)
-                    df = df.rename(columns=translation)
+                    df = df.rename(index=translation_attributes,
+                                   columns=translation)
                     df.index.name = ''
                     write_headers = True
 
@@ -59,13 +64,13 @@ for subdir, dirs, files in os.walk('dataset'):
 
             elif 'pairwise similarities' in filepath:
                 if 'Birds' in filepath or 'Clothing' in filepath or 'Fish' in filepath or 'Musical' in filepath or 'Vehicles' in filepath:
-                    idx_col = 0
+                    idx_col = 1
                     headr = 1
                 elif 'Fruit' in filepath or 'Professions' in filepath or 'Sports' in filepath or 'Vegetables' in filepath:
-                    idx_col = 1
+                    idx_col = 0
                     headr = 0
                 else:
-                    idx_col = 1
+                    idx_col = 0
                     headr = 1
 
                 df = pd.read_csv(
