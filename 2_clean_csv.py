@@ -6,7 +6,7 @@ if not os.path.exists('clean_csv'):
     os.makedirs('clean_csv')
 
 
-with open(os.path.join('translation', 'translation.json')) as f:
+with open(os.path.join('translation', 'translation_objects.json')) as f:
     translation = json.load(f)
 
 with open(os.path.join('translation', 'translation_attributes.json')) as f:
