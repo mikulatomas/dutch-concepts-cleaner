@@ -1,0 +1,14 @@
+import os
+
+import dutch_concepts as dc
+import dutch_concepts.exemplar_judgements as ej
+
+
+class ExemplarJudgements():
+    def __init__(self, dataset):
+        self.dataset = dataset
+        self.sub_dataset_dir = os.path.join(
+            self.dataset.dataset_dir, dc.DutchConcepts.CSV_DIR, 'exemplar judgments')
+
+        self.typicality_ratings = ej.TypicalityRatings.load_typicality_ratings(
+            self.sub_dataset_dir, self.dataset.language)
