@@ -13,7 +13,42 @@ class ExemplarFeatures():
         self.sub_dataset_dir = os.path.join(
             self.dataset.dataset_dir, dc.DutchConcepts.CSV_DIR, 'exemplar feature judgments')
 
-        self.category_based, self.exemplar_based = self.__animals_artifacts_loader()
+        self.category_based, self.exemplar_based = self.__loader()
+
+    def __loader(self):
+        category_based_part_1, exemplar_based_part_1 = self.__other_concepts_loader()
+
+        category_based_part_2, exemplar_based_part_2 = self.__animals_artifacts_loader()
+
+        # Join the dicts
+        category_based = {**category_based_part_1, **category_based_part_2}
+        exemplar_based = {**exemplar_based_part_1, **exemplar_based_part_2}
+
+        return category_based, exemplar_based
+
+    def __other_concepts_loader(self):
+        features = {'exemplar': {}, 'category': {}}
+
+        for csv_f in glob(os.path.join(self.sub_dataset_dir, '*', '*', '*-sum.CSV')):
+            result = re.search(
+                '^(category|exemplar)(Label)*(.*)Diagonal(.*).CSV$', os.path.basename(csv_f))
+
+            concept_name = ' '.join(re.findall(
+                '[A-Z][^A-Z]*', result.group(3))).lower()
+            data_type = result.group(1).lower()
+
+            df = pd.read_csv(
+                csv_f, encoding=dc.DutchConcepts.ENCODING, header=None)
+
+            df = self.__clean_dataframe(df)
+            frequencies = df['freq']
+            df.drop('freq', axis=1, inplace=True)
+            data = df.transpose()
+
+            features[data_type][concept_name] = {
+                'data': data, 'frequencies': frequencies}
+
+        return features['category'], features['exemplar']
 
     def __animals_artifacts_loader(self):
         features = {'exemplar': {}, 'category': {}}
@@ -45,7 +80,7 @@ class ExemplarFeatures():
         if self.dataset.language == 'en':
             index_col = 1
             column_row = 0
-        else:
+        elif self.dataset.language == 'nl':
             index_col = 0
             column_row = 1
 

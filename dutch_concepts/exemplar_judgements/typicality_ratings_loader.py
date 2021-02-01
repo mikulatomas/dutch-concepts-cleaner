@@ -47,7 +47,7 @@ class TypicalityRatingsLoader():
 
         if self.parent_dataset.dataset.language == 'en':
             index_col = 1
-        else:
+        elif self.dataset.language == 'nl':
             index_col = 0
 
         df.index = df.iloc[:, index_col]

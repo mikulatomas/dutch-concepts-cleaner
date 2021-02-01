@@ -18,6 +18,8 @@ class DutchConcepts():
 
     def __init__(self, root, download=False, language='en'):
         self.root = root
+        if language not in ['en', 'nl']:
+            raise ValueError("Wrong language, 'en' and 'nl' is supported.")
         self.language = language
         self.dataset_dir = os.path.join(self.root, DutchConcepts.DIR_NAME)
 
