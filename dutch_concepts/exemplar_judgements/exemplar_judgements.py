@@ -10,5 +10,5 @@ class ExemplarJudgements():
         self.sub_dataset_dir = os.path.join(
             self.dataset.dataset_dir, dc.DutchConcepts.CSV_DIR, 'exemplar judgments')
 
-        self.typicality_ratings = ej.TypicalityRatings.load_typicality_ratings(
-            self.sub_dataset_dir, self.dataset.language)
+        self.typicality_ratings = ej.TypicalityRatingsLoader(
+            self).load(self.sub_dataset_dir)

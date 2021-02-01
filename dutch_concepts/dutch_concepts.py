@@ -6,6 +6,7 @@ import re
 from glob import glob
 
 import dutch_concepts.exemplar_judgements as ej
+import dutch_concepts.exemplar_features as ef
 
 
 class DutchConcepts():
@@ -21,6 +22,7 @@ class DutchConcepts():
         self.dataset_dir = os.path.join(self.root, DutchConcepts.DIR_NAME)
 
         self.exemplar_judgements = ej.ExemplarJudgements(self)
+        self.exemplar_features = ef.ExemplarFeatures(self)
 
         if not os.path.exists(self.dataset_dir):
             os.makedirs(self.dataset_dir)
