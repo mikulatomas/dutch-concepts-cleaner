@@ -5,28 +5,19 @@ import pandas as pd
 from glob import glob
 
 import dutch_concepts as dc
+import dutch_concepts.tools as tools
 
 
-class ExemplarFeatures():
+class Features():
     def __init__(self, dataset):
         self.dataset = dataset
         self.sub_dataset_dir = os.path.join(
             self.dataset.dataset_dir, dc.DutchConcepts.CSV_DIR, 'exemplar feature judgments')
 
-        self.category_based, self.exemplar_based = self.__loader()
+        self.domain_category_based, self.domain_exemplar_based = self.__domains_features_loader()
+        self.semantic_category_based, self.semantic_exemplar_based = self.__semantic_concepts_features_loader()
 
-    def __loader(self):
-        category_based_part_1, exemplar_based_part_1 = self.__other_concepts_loader()
-
-        category_based_part_2, exemplar_based_part_2 = self.__animals_artifacts_loader()
-
-        # Join the dicts
-        category_based = {**category_based_part_1, **category_based_part_2}
-        exemplar_based = {**exemplar_based_part_1, **exemplar_based_part_2}
-
-        return category_based, exemplar_based
-
-    def __other_concepts_loader(self):
+    def __semantic_concepts_features_loader(self):
         features = {'exemplar': {}, 'category': {}}
 
         for csv_f in glob(os.path.join(self.sub_dataset_dir, '*', '*', '*-sum.CSV')):
@@ -38,19 +29,19 @@ class ExemplarFeatures():
             data_type = result.group(1).lower()
 
             df = pd.read_csv(
-                csv_f, encoding=dc.DutchConcepts.ENCODING, header=None)
+                csv_f, encoding=dc.DutchConcepts.ENCODING, header=None, skipinitialspace=True)
 
             df = self.__clean_dataframe(df)
             frequencies = df['freq']
             df.drop('freq', axis=1, inplace=True)
             data = df.transpose()
 
-            features[data_type][concept_name] = {
-                'data': data, 'frequencies': frequencies}
+            features[data_type][concept_name] = FeaturesDataset(
+                data, frequencies, f"{concept_name.capitalize()}{data_type.capitalize()}")
 
         return features['category'], features['exemplar']
 
-    def __animals_artifacts_loader(self):
+    def __domains_features_loader(self):
         features = {'exemplar': {}, 'category': {}}
         translate = {'animal': 'animals', 'artifacts': 'artifacts'}
 
@@ -58,6 +49,7 @@ class ExemplarFeatures():
             result = re.search(
                 '^(.*)(Animal|Artifacts)(Category|Exemplar)(.*).CSV$', os.path.basename(csv_f))
             concept_name = result.group(2).lower()
+            concept_name = translate[concept_name]
             data_type = result.group(3).lower()
 
             df = pd.read_csv(
@@ -68,8 +60,12 @@ class ExemplarFeatures():
             df.drop('freq', axis=1, inplace=True)
             data = df.transpose()
 
-            features[data_type][translate[concept_name]] = {
-                'data': data, 'frequencies': frequencies}
+            # Translation
+            data.rename(index=dc.TRANSLATION_OBJECTS, inplace=True)
+            data.rename(columns=dc.TRANSLATION_FEATURES, inplace=True)
+
+            features[data_type][concept_name] = FeaturesDataset(
+                data, frequencies, f"{concept_name.capitalize()}{data_type.capitalize()}")
 
         return features['category'], features['exemplar']
 
@@ -77,12 +73,12 @@ class ExemplarFeatures():
         df = df.dropna(how='all', axis=0)
         df = df.dropna(how='all', axis=1)
 
-        if self.dataset.language == 'en':
-            index_col = 1
-            column_row = 0
-        elif self.dataset.language == 'nl':
-            index_col = 0
-            column_row = 1
+        # if self.dataset.language == 'en':
+        # index_col = 1
+        # column_row = 0
+        # elif self.dataset.language == 'nl':
+        index_col = 0
+        column_row = 1
 
         # Set the right column
         df.columns = df.iloc[column_row]
@@ -98,8 +94,26 @@ class ExemplarFeatures():
         df.drop(df.columns[0], axis=1, inplace=True)
         df.drop(df.columns[0], axis=1, inplace=True)
 
+        # Deduplicate and ensure lowercase
+        new_columns = [label.lower() for label in df.columns]
+        tools.uniquify(new_columns)
+        df.columns = new_columns
+
+        new_index = [label.lower() for label in df.index]
+        tools.uniquify(new_index)
+        df.index = new_index
+
         # Name columns and index
         df.index.name = 'attribute'
         df.columns.name = 'object'
 
+        df = df.astype(int)
+
         return df
+
+
+class FeaturesDataset():
+    def __init__(self, data, frequencies, name):
+        self.name = name
+        self.frequencies = frequencies
+        self.data = data

@@ -1,2 +1,0 @@
-from .exemplar_judgements import ExemplarJudgements
-from .typicality_ratings_loader import TypicalityRatingsLoader
