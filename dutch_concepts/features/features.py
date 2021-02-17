@@ -123,3 +123,11 @@ class FeaturesDataset():
 
     def __repr__(self):
         return "DutchFeatureDataset({})".format(self.name)
+
+    def __len__(self):
+        return len(self.data)
+
+    def __getitem__(self, index):
+        return self.data.iloc[index].to_numpy(), self.data.index[index]
+    # def to_pytorch(self):
+    #     from torch.utils.data import Dataset
