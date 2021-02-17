@@ -117,3 +117,9 @@ class FeaturesDataset():
         self.name = name
         self.frequencies = frequencies
         self.data = data
+
+    def __str__(self):
+        return "DutchFeatureDataset({})".format(self.name)
+
+    def __repr__(self):
+        return "DutchFeatureDataset({})".format(self.name)
