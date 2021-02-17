@@ -1,5 +1,7 @@
-# py-dutch-normative-data
+# dutch-concepts
 Python wrapper for easier manipulation with Dutch normative data for semantic concepts dataset.
+
+Work in progress. Contact me for more information.
 
 ## Requirements
 `pandas`

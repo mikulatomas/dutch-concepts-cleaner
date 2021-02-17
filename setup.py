@@ -28,7 +28,7 @@ setup(
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
     ],
-    description="Python loader for Dutch normative data for Semantic concepts.",
+    description="Python wrapper for easier manipulation with Dutch normative data for semantic concepts dataset.",
     install_requires=requirements,
     long_description=readme,
     long_description_content_type='text/markdown',
@@ -37,7 +37,7 @@ setup(
     name='dutch_concepts',
     packages=find_packages(
         include=['dutch_concepts', 'dutch_concepts.*']),
-    url='https://github.com/mikulatomas/py-dutch-normative-data',
+    url='https://github.com/mikulatomas/dutch-concepts',
     version=__version__,
     zip_safe=False,
 )
