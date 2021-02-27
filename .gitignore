@@ -135,3 +135,4 @@ download
 test.ipynb
 
 tests/
+.DS_Store
