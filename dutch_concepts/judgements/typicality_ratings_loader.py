@@ -59,8 +59,11 @@ class TypicalityRatingsLoader():
         df.index = new_index
         df.index.name = 'object'
 
+        # Exemplar names fix
+        df.rename(index=dc.EXEMPLAR_NAMES_FIXES, inplace=True)
+
         # Translation
-        df.rename(index=dc.TRANSLATION_OBJECTS, inplace=True)
+        # df.rename(index=dc.TRANSLATION_OBJECTS, inplace=True)
 
         new_columns = []
         for i, name in enumerate(df.columns):

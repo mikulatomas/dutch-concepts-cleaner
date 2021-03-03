@@ -5,6 +5,7 @@ from glob import glob
 import pandas as pd
 
 import dutch_concepts as dc
+import dutch_concepts.tools as tools
 
 
 class SimilarityJudgementsLoader():
@@ -22,7 +23,8 @@ class SimilarityJudgementsLoader():
         for csv_f in glob(os.path.join(load_dir, '*', '*.CSV')):
             result = re.search(
                 '^pairwiseSimilarities(.*)-(.*).CSV$', os.path.basename(csv_f))
-            concept_name = result.group(1).lower()
+
+            concept_name = tools.format_concept_name(result.group(1))
             subject_number = result.group(2)
 
             df = pd.read_csv(
@@ -40,7 +42,7 @@ class SimilarityJudgementsLoader():
 
         for concept_name, datasets in similarities.items():
             similarities_filtered[concept_name] = SimilarityJudgementsDataset(
-                datasets, self.__calculate_mean(datasets), f"{concept_name.capitalize()}PairwiseSimilarities")
+                self.__calculate_mean(datasets), datasets, f"{concept_name.capitalize()}PairwiseSimilarities")
 
         return similarities_filtered
 
@@ -80,9 +82,13 @@ class SimilarityJudgementsLoader():
         df.drop(df.index[0], axis=0, inplace=True)
         df.drop(df.index[0], axis=0, inplace=True)
 
+        # Exemplar names fix
+        df.rename(index=dc.EXEMPLAR_NAMES_FIXES, inplace=True)
+        df.rename(columns=dc.EXEMPLAR_NAMES_FIXES, inplace=True)
+
         # Translation
-        df.rename(index=dc.TRANSLATION_OBJECTS, inplace=True)
-        df.rename(columns=dc.TRANSLATION_OBJECTS, inplace=True)
+        # df.rename(index=dc.TRANSLATION_OBJECTS, inplace=True)
+        # df.rename(columns=dc.TRANSLATION_OBJECTS, inplace=True)
 
         # Name columns and index
         df.index.name = 'object'
@@ -95,7 +101,7 @@ class SimilarityJudgementsLoader():
 
 
 class SimilarityJudgementsDataset():
-    def __init__(self, subjects_data, mean, name):
+    def __init__(self, data, respondents, name):
         self.name = name
-        self.mean = mean
-        self.subjects_data = subjects_data
+        self.data = data
+        self.respondents = respondents

@@ -1,4 +1,6 @@
 # https://stackoverflow.com/questions/30650474/python-rename-duplicates-in-list-with-progressive-numbers-without-sorting-list
+import re
+
 from collections import Counter
 from itertools import tee, count
 
@@ -22,3 +24,8 @@ def uniquify(seq):
             continue
         else:
             seq[idx] += f" ({suffix})"
+
+
+def format_concept_name(concept_name):
+    return ' '.join(re.findall(
+        '[A-Z][^A-Z]*', concept_name)).lower()

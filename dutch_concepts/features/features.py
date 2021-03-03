@@ -1,6 +1,7 @@
 import os
 import re
 
+import numpy as np
 import pandas as pd
 from glob import glob
 
@@ -24,8 +25,7 @@ class Features():
             result = re.search(
                 '^(category|exemplar)(Label)*(.*)Diagonal(.*).CSV$', os.path.basename(csv_f))
 
-            concept_name = ' '.join(re.findall(
-                '[A-Z][^A-Z]*', result.group(3))).lower()
+            concept_name = tools.format_concept_name(result.group(3))
             data_type = result.group(1).lower()
 
             df = pd.read_csv(
@@ -34,16 +34,19 @@ class Features():
             df = self.__clean_dataframe(df)
             frequencies = df['freq']
             df.drop('freq', axis=1, inplace=True)
-            data = df.transpose()
+            df = df.transpose()
+
+            # Exemplar names fix
+            df.rename(index=dc.EXEMPLAR_NAMES_FIXES, inplace=True)
 
             features[data_type][concept_name] = FeaturesDataset(
-                data, frequencies, f"{concept_name.capitalize()}{data_type.capitalize()}")
+                df, frequencies, f"{concept_name.capitalize()}{data_type.capitalize()}")
 
         return features['category'], features['exemplar']
 
     def __domains_features_loader(self):
         features = {'exemplar': {}, 'category': {}}
-        translate = {'animal': 'animals', 'artifacts': 'artifacts'}
+        translate = {'animal': 'animal', 'artifacts': 'artifact'}
 
         for csv_f in glob(os.path.join(self.sub_dataset_dir, '*', '*-sum.CSV')):
             result = re.search(
@@ -58,14 +61,16 @@ class Features():
             df = self.__clean_dataframe(df)
             frequencies = df['freq']
             df.drop('freq', axis=1, inplace=True)
-            data = df.transpose()
+            df = df.transpose()
 
+            # Exemplar names fix
+            df.rename(index=dc.EXEMPLAR_NAMES_FIXES, inplace=True)
             # Translation
-            data.rename(index=dc.TRANSLATION_OBJECTS, inplace=True)
-            data.rename(columns=dc.TRANSLATION_FEATURES, inplace=True)
+            # df.rename(index=dc.TRANSLATION_OBJECTS, inplace=True)
+            # df.rename(columns=dc.TRANSLATION_FEATURES, inplace=True)
 
             features[data_type][concept_name] = FeaturesDataset(
-                data, frequencies, f"{concept_name.capitalize()}{data_type.capitalize()}")
+                df, frequencies, f"{concept_name.capitalize()}{data_type.capitalize()}")
 
         return features['category'], features['exemplar']
 
@@ -128,6 +133,4 @@ class FeaturesDataset():
         return len(self.data)
 
     def __getitem__(self, index):
-        return self.data.iloc[index].to_numpy(), self.data.index[index]
-    # def to_pytorch(self):
-    #     from torch.utils.data import Dataset
+        return self.data.iloc[index].to_numpy(dtype=np.single), self.data.index[index]
