@@ -1,7 +1,7 @@
 import os
 
 import dutch_concepts as dc
-import dutch_concepts.judgements as ej
+import dutch_concepts.judgements as dcj
 
 
 class Judgements():
@@ -10,8 +10,8 @@ class Judgements():
         self.sub_dataset_dir = os.path.join(
             self.dataset.dataset_dir, dc.DutchConcepts.CSV_DIR, 'exemplar judgments')
 
-        self.typicality_ratings = ej.TypicalityRatingsLoader(
+        self.typicality_ratings = dcj.TypicalityRatingsLoader(
             self).load()
 
-        self.similarities = ej.SimilarityJudgementsLoader(
+        self.similarities = dcj.SimilarityJudgementsLoader(
             self).load()
