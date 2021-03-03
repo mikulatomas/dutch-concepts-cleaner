@@ -71,6 +71,10 @@ class SimilarityJudgementsLoader():
             index_col = 0
             column_row = 1
 
+        if self.parent_dataset.dataset.language == 'en':
+            index_col = 0 if index_col == 1 else 1
+            column_row = 0 if column_row == 1 else 1
+
         # Set the index
         df.index = df.iloc[:, index_col]
         df.drop(df.columns[0], axis=1, inplace=True)

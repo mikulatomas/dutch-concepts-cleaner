@@ -78,12 +78,12 @@ class Features():
         df = df.dropna(how='all', axis=0)
         df = df.dropna(how='all', axis=1)
 
-        # if self.dataset.language == 'en':
-        # index_col = 1
-        # column_row = 0
-        # elif self.dataset.language == 'nl':
-        index_col = 0
-        column_row = 1
+        if self.dataset.language == 'en':
+            index_col = 1
+            column_row = 0
+        elif self.dataset.language == 'nl':
+            index_col = 0
+            column_row = 1
 
         # Set the right column
         df.columns = df.iloc[column_row]

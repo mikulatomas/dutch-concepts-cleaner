@@ -47,7 +47,10 @@ class TypicalityRatingsLoader():
         df = df.dropna(how='all', axis=0)
         df = df.dropna(how='all', axis=1)
 
-        index_col = 0
+        if self.parent_dataset.dataset.language == 'en':
+            index_col = 1
+        elif self.parent_dataset.dataset.language == 'nl':
+            index_col = 0
 
         df.index = df.iloc[:, index_col]
         df.drop(df.columns[0], axis=1, inplace=True)
