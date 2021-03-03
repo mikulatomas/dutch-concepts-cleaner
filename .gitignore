@@ -132,7 +132,7 @@ clean_csv
 dataset
 download
 
-test.ipynb
+playground.ipynb
+tests/dutch_concepts
 
-tests/
 .DS_Store
