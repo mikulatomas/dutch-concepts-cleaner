@@ -23,9 +23,6 @@ class DutchConcepts():
         self.language = language
         self.dataset_dir = os.path.join(self.root, DutchConcepts.DIR_NAME)
 
-        self.judgements = ej.Judgements(self)
-        self.features = ef.Features(self)
-
         if not os.path.exists(self.dataset_dir):
             os.makedirs(self.dataset_dir)
 
@@ -39,6 +36,9 @@ class DutchConcepts():
                 print("Extracting done.")
             else:
                 print("Dataset directory is not empty, skipping download.")
+
+        self.judgements = ej.Judgements(self)
+        self.features = ef.Features(self)
 
     def __download(self):
         with urllib.request.urlopen(DutchConcepts.URL) as f:
