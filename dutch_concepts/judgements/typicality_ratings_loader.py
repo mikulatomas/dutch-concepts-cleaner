@@ -47,12 +47,20 @@ class TypicalityRatingsLoader():
         df = df.dropna(how='all', axis=0)
         df = df.dropna(how='all', axis=1)
 
-        if self.parent_dataset.dataset.language == 'en':
-            index_col = 1
-        elif self.parent_dataset.dataset.language == 'nl':
-            index_col = 0
+        df.index = df.iloc[:, 0]
 
-        df.index = df.iloc[:, index_col]
+        # Exemplar names fix
+        df.rename(index=dc.EXEMPLAR_NAMES_FIXES, inplace=True)
+
+        if self.parent_dataset.dataset.language == 'en':
+            exemplar_translation = dict(
+                zip(df.index.values, map(str.strip, df.iloc[:, 1].values)))
+
+            # Apply translation fixes
+            for original, english in dc.EXEMPLAR_NAMES_TRANSLATION_FIXES.items():
+                if exemplar_translation.get(original):
+                    exemplar_translation[original] = english
+
         df.drop(df.columns[0], axis=1, inplace=True)
         df.drop(df.columns[0], axis=1, inplace=True)
 
@@ -62,11 +70,9 @@ class TypicalityRatingsLoader():
         df.index = new_index
         df.index.name = 'object'
 
-        # Exemplar names fix
-        df.rename(index=dc.EXEMPLAR_NAMES_FIXES, inplace=True)
-
-        # Translation
-        # df.rename(index=dc.TRANSLATION_OBJECTS, inplace=True)
+        if self.parent_dataset.dataset.language == 'en':
+            # Translation
+            df.rename(index=exemplar_translation, inplace=True)
 
         new_columns = []
         for i, name in enumerate(df.columns):

@@ -3,10 +3,17 @@ import os
 import zipfile
 import re
 
+from enum import Enum
+
 from glob import glob
 
 import dutch_concepts.judgements as ej
 import dutch_concepts.features as ef
+
+
+class FeatureType(Enum):
+    EXEMPLAR = 'exemplar'
+    CATEGORY = 'category'
 
 
 class DutchConcepts():
@@ -38,7 +45,11 @@ class DutchConcepts():
                 print("Dataset directory is not empty, skipping download.")
 
         self.judgements = ej.Judgements(self)
-        self.features = ef.Features(self)
+        self.exemplar_features = ef.Features(
+            self, feature_type=FeatureType.EXEMPLAR)
+        self.category_features = ef.Features(
+            self, feature_type=FeatureType.CATEGORY)
+        # self.features = ef.Features(self)
 
     def __download(self):
         with urllib.request.urlopen(DutchConcepts.URL) as f:

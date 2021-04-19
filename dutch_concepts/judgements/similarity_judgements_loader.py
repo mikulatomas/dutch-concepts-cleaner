@@ -71,12 +71,21 @@ class SimilarityJudgementsLoader():
             index_col = 0
             column_row = 1
 
-        if self.parent_dataset.dataset.language == 'en':
-            index_col = 0 if index_col == 1 else 1
-            column_row = 0 if column_row == 1 else 1
-
         # Set the index
         df.index = df.iloc[:, index_col]
+
+        # Exemplar names fix
+        df.rename(index=dc.EXEMPLAR_NAMES_FIXES, inplace=True)
+
+        if self.parent_dataset.dataset.language == 'en':
+            exemplar_translation = dict(
+                zip(df.index.values[2:], map(str.strip, df.iloc[0 if column_row == 1 else 1][2:])))
+
+            # Apply translation fixes
+            for original, english in dc.EXEMPLAR_NAMES_TRANSLATION_FIXES.items():
+                if exemplar_translation.get(original):
+                    exemplar_translation[original] = english
+
         df.drop(df.columns[0], axis=1, inplace=True)
         df.drop(df.columns[0], axis=1, inplace=True)
         df.index = df.index.fillna('drop')
@@ -86,13 +95,10 @@ class SimilarityJudgementsLoader():
         df.drop(df.index[0], axis=0, inplace=True)
         df.drop(df.index[0], axis=0, inplace=True)
 
-        # Exemplar names fix
-        df.rename(index=dc.EXEMPLAR_NAMES_FIXES, inplace=True)
-        df.rename(columns=dc.EXEMPLAR_NAMES_FIXES, inplace=True)
-
-        # Translation
-        # df.rename(index=dc.TRANSLATION_OBJECTS, inplace=True)
-        # df.rename(columns=dc.TRANSLATION_OBJECTS, inplace=True)
+        if self.parent_dataset.dataset.language == 'en':
+            # Translation
+            df.rename(index=exemplar_translation, inplace=True)
+            df.rename(columns=exemplar_translation, inplace=True)
 
         # Name columns and index
         df.index.name = 'object'

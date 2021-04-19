@@ -17,15 +17,15 @@ animal_domain = [
     'mammals'
 ]
 
-dataset = DutchConcepts(root='tests', download=True)
+dataset = DutchConcepts(root='tests', download=True, language='nl')
 
 
 @pytest.mark.parametrize(
     'domain, categories', [
-        (dataset.features.domain_category_based['artifact'], artifact_domain),
-        (dataset.features.domain_category_based['animal'], animal_domain),
-        (dataset.features.domain_exemplar_based['artifact'], artifact_domain),
-        (dataset.features.domain_exemplar_based['animal'], animal_domain)])
+        (dataset.category_features.domain['artifacts'], artifact_domain),
+        (dataset.category_features.domain['animal'], animal_domain),
+        (dataset.exemplar_features.domain['artifacts'], artifact_domain),
+        (dataset.exemplar_features.domain['animal'], animal_domain)])
 @pytest.mark.parametrize(
     'judgement', [
         dataset.judgements.typicality_ratings,
@@ -40,8 +40,8 @@ def test_object_labels_domain(domain, categories, judgement):
 
 @pytest.mark.parametrize(
     'features', [
-        dataset.features.semantic_category_based,
-        dataset.features.semantic_exemplar_based,
+        dataset.category_features.category,
+        dataset.exemplar_features.category,
     ]
 )
 @pytest.mark.parametrize(
@@ -50,7 +50,9 @@ def test_object_labels_domain(domain, categories, judgement):
         dataset.judgements.similarities])
 def test_object_labels(features, judgement):
     for category, category_features in features.items():
+
         objects = judgement[category].data.index
 
         assert len(category_features.data.index) == len(objects)
+        set(category_features.data.index).symmetric_difference(set(objects))
         assert set(category_features.data.index) == set(objects)
