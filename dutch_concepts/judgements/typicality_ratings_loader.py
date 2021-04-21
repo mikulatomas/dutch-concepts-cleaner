@@ -23,7 +23,7 @@ class TypicalityRatingsLoader():
             concept_name = result.group(1)
 
             df = pd.read_csv(
-                csv_f, encoding=dc.DutchConcepts.ENCODING, skipinitialspace=True)
+                csv_f, encoding=dc.DutchConcepts.ENCODING, skipinitialspace=True, dtype='unicode')
             reliability = self.__extract_reliability(df)
 
             df = self.__clean_dataframe(df)

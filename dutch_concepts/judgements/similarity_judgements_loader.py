@@ -28,7 +28,7 @@ class SimilarityJudgementsLoader():
             subject_number = result.group(2)
 
             df = pd.read_csv(
-                csv_f, encoding=dc.DutchConcepts.ENCODING, header=None, skipinitialspace=True, error_bad_lines=False)
+                csv_f, encoding=dc.DutchConcepts.ENCODING, header=None, skipinitialspace=True, error_bad_lines=False, dtype='unicode')
 
             df = self.__clean_dataframe(df, concept_name)
             name = f"{concept_name.capitalize()}PairwiseSimilarities-{subject_number}"

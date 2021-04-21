@@ -30,7 +30,7 @@ class Features():
             concept_name = tools.format_concept_name(result.group(3))
 
             df = pd.read_csv(
-                csv_f, encoding=dc.DutchConcepts.ENCODING, header=None, skipinitialspace=True)
+                csv_f, encoding=dc.DutchConcepts.ENCODING, header=None, skipinitialspace=True, dtype='unicode')
 
             df = self.__clean_dataframe(df)
             frequencies = df['freq']
@@ -92,13 +92,13 @@ class Features():
                 if exemplar_translation.get(original):
                     exemplar_translation[original] = english
 
-        features_translation = dict(
-            zip(df[df.columns[0]].values[2:], df[df.columns[0]].values[2:]))
+            features_translation = dict(
+                zip(df.iloc[:, 0], df.iloc[:, 1]))
 
-        # Apply translation fixes
-        for original, english in dc.FEATURE_NAMES_TRANSLATION_FIXES.items():
-            if features_translation.get(original):
-                features_translation[original] = english
+            # Apply translation fixes
+            for original, english in dc.FEATURE_NAMES_TRANSLATION_FIXES.items():
+                if features_translation.get(original):
+                    features_translation[original] = english
 
         # Set the right column
         df.drop(df.index[0], axis=0, inplace=True)
@@ -131,6 +131,7 @@ class Features():
         if self.dataset.language == 'en':
             # Exemplar translation
             df.rename(columns=exemplar_translation, inplace=True)
+            df.rename(index=features_translation, inplace=True)
 
         import collections
         duplicity = [(item, count) for item, count in collections.Counter(
