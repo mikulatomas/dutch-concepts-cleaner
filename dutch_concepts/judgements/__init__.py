@@ -1,3 +1,3 @@
 from .judgements import Judgements
-from .typicality_ratings_loader import TypicalityRatingsLoader
-from .similarity_judgements_loader import SimilarityJudgementsLoader
+from .typicality_ratings_loader import TypicalityLoader
+from .pairwise_similarity_loader import PairwiseSimilarityLoader

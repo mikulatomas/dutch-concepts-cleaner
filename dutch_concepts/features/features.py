@@ -19,6 +19,30 @@ class Features():
 
         self.domain = self.__domains_features_loader()
         self.category = self.__semantic_concepts_features_loader()
+        self.importance = self.__features_importance_loader()
+
+    def __features_importance_loader(self):
+        categories = {}
+
+        for csv_f in glob(os.path.join(self._features_dir, '*', f'{self.feature_type.value}*.CSV')):
+
+            result = re.search(
+                f'^{self.feature_type.value}FeatureImportanceRatings-(.*).CSV$', os.path.basename(csv_f))
+
+            concept_name = result.group(1)
+            # TODO generalize to all
+            if dc.CATEGORY_NAMES_FIXES.get(concept_name):
+                concept_name = dc.CATEGORY_NAMES_FIXES.get(concept_name)
+
+            df = pd.read_csv(
+                csv_f, encoding=dc.DutchConcepts.ENCODING, header=None, dtype='unicode', index_col=0)
+
+            df = self.__clean_importance_dataframe(df)
+
+            categories[concept_name] = FeatureImportanceDataset(
+                df, concept_name, self.feature_type)
+
+        return categories
 
     def __semantic_concepts_features_loader(self):
         features = {}
@@ -32,13 +56,10 @@ class Features():
             df = pd.read_csv(
                 csv_f, encoding=dc.DutchConcepts.ENCODING, header=None, skipinitialspace=True, dtype='unicode')
 
-            df = self.__clean_dataframe(df)
+            df = self.__clean_features_dataframe(df)
             frequencies = df['freq']
             df.drop('freq', axis=1, inplace=True)
             df = df.transpose()
-
-            # Exemplar names fix
-            df.rename(index=dc.EXEMPLAR_NAMES_FIXES, inplace=True)
 
             features[concept_name] = FeaturesDataset(
                 df,
@@ -61,7 +82,7 @@ class Features():
             df = pd.read_csv(
                 csv_f, encoding=dc.DutchConcepts.ENCODING, header=None)
 
-            df = self.__clean_dataframe(df)
+            df = self.__clean_features_dataframe(df)
             frequencies = df['freq']
             df.drop('freq', axis=1, inplace=True)
             df = df.transpose()
@@ -74,9 +95,27 @@ class Features():
 
         return features
 
-    def __clean_dataframe(self, df):
-        df = df.dropna(how='all', axis=0)
-        df = df.dropna(how='all', axis=1)
+    def __clean_importance_dataframe(self, df):
+        df = tools.drop_all_nan(df)
+
+        if self.dataset.language == 'en':
+            features_translation = tools.get_fixed_translation(
+                df.index, df.iloc[:, 0], dc.FEATURE_TRANSLATION_FIXES)
+
+        df.drop(df.columns[0], axis=1, inplace=True)
+
+        if self.dataset.language == 'en':
+            df.rename(index=features_translation, inplace=True)
+
+        df.columns = range(df.shape[1])
+
+        df.index.name = 'attribute'
+        df.columns.name = 'respondent'
+
+        return df
+
+    def __clean_features_dataframe(self, df):
+        df = tools.drop_all_nan(df)
 
         df.columns = df.iloc[1]
 
@@ -84,21 +123,10 @@ class Features():
         df.rename(columns=dc.EXEMPLAR_NAMES_FIXES, inplace=True)
 
         if self.dataset.language == 'en':
-            exemplar_translation = dict(
-                zip(df.columns[3:], map(str.strip, df.iloc[0][3:])))
-
-            # Apply translation fixes
-            for original, english in dc.EXEMPLAR_NAMES_TRANSLATION_FIXES.items():
-                if exemplar_translation.get(original):
-                    exemplar_translation[original] = english
-
-            features_translation = dict(
-                zip(df.iloc[:, 0], df.iloc[:, 1]))
-
-            # Apply translation fixes
-            for original, english in dc.FEATURE_NAMES_TRANSLATION_FIXES.items():
-                if features_translation.get(original):
-                    features_translation[original] = english
+            exemplar_translation = tools.get_fixed_translation(
+                df.columns[3:], df.iloc[0][3:], dc.EXEMPLAR_TRANSLATION_FIXES)
+            features_translation = tools.get_fixed_translation(
+                df.iloc[:, 0][2:], df.iloc[:, 1][2:], dc.FEATURE_TRANSLATION_FIXES)
 
         # Set the right column
         df.drop(df.index[0], axis=0, inplace=True)
@@ -112,15 +140,6 @@ class Features():
         df.columns = df.columns.fillna('drop')
         df.drop(df.columns[0], axis=1, inplace=True)
         df.drop(df.columns[0], axis=1, inplace=True)
-
-        # Deduplicate and ensure lowercase
-        new_columns = [label.lower() for label in df.columns]
-        tools.uniquify(new_columns)
-        df.columns = new_columns
-
-        new_index = [label.lower() for label in df.index]
-        tools.uniquify(new_index)
-        df.index = new_index
 
         # Name columns and index
         df.index.name = 'attribute'
@@ -159,5 +178,18 @@ class FeaturesDataset():
     def __len__(self):
         return len(self.data)
 
-    def __getitem__(self, index):
-        return self.data.iloc[index].to_numpy(dtype=np.single), self.data.index[index]
+
+class FeatureImportanceDataset():
+    def __init__(self, data, name, feature_type):
+        self.name = name
+        self.data = data
+        self.feature_type = feature_type
+
+    def __str__(self):
+        return "DutchFeatureImportanceDataset({})".format(self.name)
+
+    def __repr__(self):
+        return "DutchFeatureImportanceDataset({})".format(self.name)
+
+    def __len__(self):
+        return len(self.data)

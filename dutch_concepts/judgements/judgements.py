@@ -10,8 +10,8 @@ class Judgements():
         self.sub_dataset_dir = os.path.join(
             self.dataset.dataset_dir, dc.DutchConcepts.CSV_DIR, 'exemplar judgments')
 
-        self.typicality_ratings = dcj.TypicalityRatingsLoader(
+        self.typicality = dcj.TypicalityLoader(
             self).load()
 
-        self.similarities = dcj.SimilarityJudgementsLoader(
+        self.pairwise_similarity = dcj.PairwiseSimilarityLoader(
             self).load()

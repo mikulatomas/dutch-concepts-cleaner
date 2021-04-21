@@ -11,7 +11,7 @@ EXEMPLAR_NAMES_FIXES = {
     "pad (dier)": "pad",
 }
 
-EXEMPLAR_NAMES_TRANSLATION_FIXES = {
+EXEMPLAR_TRANSLATION_FIXES = {
     # duplicity: "brommer", "moto" both translated as "motorbike"
     "brommer": "scooter",
     # duplicity: "brommer", "bromfiets" are both "scooter" because of the rule above

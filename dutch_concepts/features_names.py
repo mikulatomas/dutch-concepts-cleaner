@@ -1,4 +1,4 @@
-FEATURE_NAMES_TRANSLATION_FIXES = {
+FEATURE_TRANSLATION_FIXES = {
     # duplicity: both "is klein" and "is smal" is translated as "is small"
     "is klein": "is little",
     # duplicity: both "heeft benen" and "heeft poten" is translated as "has legs"

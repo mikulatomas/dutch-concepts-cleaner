@@ -8,7 +8,7 @@ import dutch_concepts as dc
 import dutch_concepts.tools as tools
 
 
-class SimilarityJudgementsLoader():
+class PairwiseSimilarityLoader():
     def __init__(self, parent_dataset):
         self.parent_dataset = parent_dataset
 
@@ -25,6 +25,10 @@ class SimilarityJudgementsLoader():
                 '^pairwiseSimilarities(.*)-(.*).CSV$', os.path.basename(csv_f))
 
             concept_name = tools.format_concept_name(result.group(1))
+
+            if concept_name == 'amphibians':
+                continue
+
             subject_number = result.group(2)
 
             df = pd.read_csv(
@@ -42,7 +46,7 @@ class SimilarityJudgementsLoader():
 
         for concept_name, datasets in similarities.items():
             similarities_filtered[concept_name] = SimilarityJudgementsDataset(
-                self.__calculate_mean(datasets), datasets, f"{concept_name.capitalize()}PairwiseSimilarities")
+                self.__calculate_mean(datasets), datasets, concept_name)
 
         return similarities_filtered
 
@@ -57,8 +61,7 @@ class SimilarityJudgementsLoader():
         return mean
 
     def __clean_dataframe(self, df, concept_name):
-        df = df.dropna(how='all', axis=0)
-        df = df.dropna(how='all', axis=1)
+        df = tools.drop_all_nan(df)
 
         # hack because csv are messy
         if concept_name in ['birds', 'clothing', 'fish', 'musical instruments', 'vehicles']:
@@ -78,13 +81,8 @@ class SimilarityJudgementsLoader():
         df.rename(index=dc.EXEMPLAR_NAMES_FIXES, inplace=True)
 
         if self.parent_dataset.dataset.language == 'en':
-            exemplar_translation = dict(
-                zip(df.index.values[2:], map(str.strip, df.iloc[0 if column_row == 1 else 1][2:])))
-
-            # Apply translation fixes
-            for original, english in dc.EXEMPLAR_NAMES_TRANSLATION_FIXES.items():
-                if exemplar_translation.get(original):
-                    exemplar_translation[original] = english
+            exemplar_translation = tools.get_fixed_translation(
+                df.index[2:], df.iloc[0 if column_row == 1 else 1][2:], dc.EXEMPLAR_TRANSLATION_FIXES)
 
         df.drop(df.columns[0], axis=1, inplace=True)
         df.drop(df.columns[0], axis=1, inplace=True)
@@ -92,6 +90,10 @@ class SimilarityJudgementsLoader():
 
         # Set the columns
         df.columns = df.iloc[column_row]
+
+        # Exemplar names fix
+        df.rename(columns=dc.EXEMPLAR_NAMES_FIXES, inplace=True)
+
         df.drop(df.index[0], axis=0, inplace=True)
         df.drop(df.index[0], axis=0, inplace=True)
 
@@ -115,3 +117,12 @@ class SimilarityJudgementsDataset():
         self.name = name
         self.data = data
         self.respondents = respondents
+
+    def __str__(self):
+        return "SimilarityJudgementsDataset({})".format(self.name)
+
+    def __repr__(self):
+        return "SimilarityJudgementsDataset({})".format(self.name)
+
+    def __len__(self):
+        return len(self.data)

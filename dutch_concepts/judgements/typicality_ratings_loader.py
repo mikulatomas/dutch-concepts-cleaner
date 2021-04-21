@@ -8,7 +8,7 @@ import dutch_concepts as dc
 import dutch_concepts.tools as tools
 
 
-class TypicalityRatingsLoader():
+class TypicalityLoader():
     def __init__(self, parent_dataset):
         self.parent_dataset = parent_dataset
 
@@ -22,6 +22,9 @@ class TypicalityRatingsLoader():
                 '^exemplarTypicalityRatings-(.*).CSV$', os.path.basename(csv_f))
             concept_name = result.group(1)
 
+            if concept_name == 'amphibians':
+                continue
+
             df = pd.read_csv(
                 csv_f, encoding=dc.DutchConcepts.ENCODING, skipinitialspace=True, dtype='unicode')
             reliability = self.__extract_reliability(df)
@@ -29,7 +32,7 @@ class TypicalityRatingsLoader():
             df = self.__clean_dataframe(df)
 
             ratings[concept_name] = TypicalityJudgementsDataset(
-                df, reliability, f"{concept_name.capitalize()}TypicalityRatings")
+                df, reliability, concept_name)
 
         return ratings
 
@@ -44,8 +47,7 @@ class TypicalityRatingsLoader():
         return reliability
 
     def __clean_dataframe(self, df):
-        df = df.dropna(how='all', axis=0)
-        df = df.dropna(how='all', axis=1)
+        df = tools.drop_all_nan(df)
 
         df.index = df.iloc[:, 0]
 
@@ -53,25 +55,15 @@ class TypicalityRatingsLoader():
         df.rename(index=dc.EXEMPLAR_NAMES_FIXES, inplace=True)
 
         if self.parent_dataset.dataset.language == 'en':
-            exemplar_translation = dict(
-                zip(df.index.values, map(str.strip, df.iloc[:, 1].values)))
-
-            # Apply translation fixes
-            for original, english in dc.EXEMPLAR_NAMES_TRANSLATION_FIXES.items():
-                if exemplar_translation.get(original):
-                    exemplar_translation[original] = english
+            exemplar_translation = tools.get_fixed_translation(
+                df.index, df.iloc[:, 1], dc.EXEMPLAR_TRANSLATION_FIXES)
 
         df.drop(df.columns[0], axis=1, inplace=True)
         df.drop(df.columns[0], axis=1, inplace=True)
 
-        new_index = [label.lower() for label in df.index]
-        tools.uniquify(new_index)
-
-        df.index = new_index
         df.index.name = 'object'
 
         if self.parent_dataset.dataset.language == 'en':
-            # Translation
             df.rename(index=exemplar_translation, inplace=True)
 
         new_columns = []
@@ -93,3 +85,12 @@ class TypicalityJudgementsDataset():
         self.name = name
         self.reliability = reliability
         self.data = data
+
+    def __str__(self):
+        return "TypicalityJudgementsDataset({})".format(self.name)
+
+    def __repr__(self):
+        return "TypicalityJudgementsDataset({})".format(self.name)
+
+    def __len__(self):
+        return len(self.data)
