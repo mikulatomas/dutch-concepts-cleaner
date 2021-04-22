@@ -98,9 +98,15 @@ class Features():
     def __clean_importance_dataframe(self, df):
         df = tools.drop_all_nan(df)
 
+        # Features names fix
+        df.index = map(str.strip, df.index)
+        df.rename(index=dc.FEATURE_NAMES_FIXES, inplace=True)
+
+        original_english_features = df.iloc[:, 0]
+
         if self.dataset.language == 'en':
             features_translation = tools.get_fixed_translation(
-                df.index, df.iloc[:, 0], dc.FEATURE_TRANSLATION_FIXES)
+                df.index, original_english_features, dc.FEATURE_TRANSLATION_FIXES)
 
         df.drop(df.columns[0], axis=1, inplace=True)
 
@@ -117,27 +123,24 @@ class Features():
     def __clean_features_dataframe(self, df):
         df = tools.drop_all_nan(df)
 
+        # Set right columns
         df.columns = df.iloc[1]
-
-        # Exemplar names fix
-        df.rename(columns=dc.EXEMPLAR_NAMES_FIXES, inplace=True)
-
-        if self.dataset.language == 'en':
-            exemplar_translation = tools.get_fixed_translation(
-                df.columns[3:], df.iloc[0][3:], dc.EXEMPLAR_TRANSLATION_FIXES)
-            features_translation = tools.get_fixed_translation(
-                df.iloc[:, 0][2:], df.iloc[:, 1][2:], dc.FEATURE_TRANSLATION_FIXES)
-
-        # Set the right column
-        df.drop(df.index[0], axis=0, inplace=True)
-        df.drop(df.index[0], axis=0, inplace=True)
-
-        # Set the right index
-        df.index = df.iloc[:, 0]
+        df.columns = df.columns.fillna('tmp')
         new_columns = list(df.columns)
         new_columns[2] = 'freq'
         df.columns = new_columns
-        df.columns = df.columns.fillna('drop')
+        df.columns = map(str.strip, df.columns)
+
+        original_english_exemplars = df.iloc[0][3:].values
+
+        df.drop(df.index[0], axis=0, inplace=True)
+        df.drop(df.index[0], axis=0, inplace=True)
+
+        # Set right index
+        df.index = df.iloc[:, 0]
+        df.index = map(str.strip, df.index)
+        original_english_features = df.iloc[:, 1].values
+
         df.drop(df.columns[0], axis=1, inplace=True)
         df.drop(df.columns[0], axis=1, inplace=True)
 
@@ -147,17 +150,21 @@ class Features():
 
         df = df.astype(int)
 
+        # Exemplar names fix
+        df.rename(columns=dc.EXEMPLAR_NAMES_FIXES, inplace=True)
+
+        # Features names fix
+        df.rename(index=dc.FEATURE_NAMES_FIXES, inplace=True)
+
+        # Translation
         if self.dataset.language == 'en':
-            # Exemplar translation
+            exemplar_translation = tools.get_fixed_translation(
+                df.columns[1:], original_english_exemplars, dc.EXEMPLAR_TRANSLATION_FIXES)
+            features_translation = tools.get_fixed_translation(
+                df.index, original_english_features, dc.FEATURE_TRANSLATION_FIXES)
+
             df.rename(columns=exemplar_translation, inplace=True)
             df.rename(index=features_translation, inplace=True)
-
-        import collections
-        duplicity = [(item, count) for item, count in collections.Counter(
-            df.index).items() if count > 1]
-
-        if duplicity:
-            raise ValueError(duplicity)
 
         return df
 

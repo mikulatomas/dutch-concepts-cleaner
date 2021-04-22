@@ -76,6 +76,8 @@ class PairwiseSimilarityLoader():
 
         # Set the index
         df.index = df.iloc[:, index_col]
+        df.index = df.index.fillna('tmp')
+        df.index = map(str.strip, df.index)
 
         # Exemplar names fix
         df.rename(index=dc.EXEMPLAR_NAMES_FIXES, inplace=True)
@@ -86,10 +88,10 @@ class PairwiseSimilarityLoader():
 
         df.drop(df.columns[0], axis=1, inplace=True)
         df.drop(df.columns[0], axis=1, inplace=True)
-        df.index = df.index.fillna('drop')
 
         # Set the columns
         df.columns = df.iloc[column_row]
+        df.columns = map(str.strip, df.columns)
 
         # Exemplar names fix
         df.rename(columns=dc.EXEMPLAR_NAMES_FIXES, inplace=True)

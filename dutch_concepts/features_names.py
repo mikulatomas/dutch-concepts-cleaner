@@ -1,3 +1,8 @@
+FEATURE_NAMES_FIXES = {
+    # duplicity: "leeft in afrika", "leeft in Afrika"
+    "leeft in afrika": "leeft in Afrika",
+}
+
 FEATURE_TRANSLATION_FIXES = {
     # duplicity: both "is klein" and "is smal" is translated as "is small"
     "is klein": "is little",

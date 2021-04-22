@@ -50,6 +50,7 @@ class TypicalityLoader():
         df = tools.drop_all_nan(df)
 
         df.index = df.iloc[:, 0]
+        df.index = map(str.strip, df.index)
 
         # Exemplar names fix
         df.rename(index=dc.EXEMPLAR_NAMES_FIXES, inplace=True)

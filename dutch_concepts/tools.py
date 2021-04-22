@@ -18,6 +18,8 @@ def drop_all_nan(df):
 
 
 def get_fixed_translation(original, english, fixes):
+    assert len(original) == len(english)
+
     translation = dict(
         zip(original, map(str.strip, english)))
 

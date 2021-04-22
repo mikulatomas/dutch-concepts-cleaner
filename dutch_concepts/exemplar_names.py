@@ -51,5 +51,7 @@ EXEMPLAR_TRANSLATION_FIXES = {
     # translation error: "staalborstel" is translated as "moped" in one file
     "staalborstel": "wire brush",
     # duplicity: "step" is translated both as "kick scooter" and "scooter"
-    "step": "kick scooter"
+    "step": "kick scooter",
+    # typo: "adder" translated as "viger"
+    "adder": "viper",
 }
