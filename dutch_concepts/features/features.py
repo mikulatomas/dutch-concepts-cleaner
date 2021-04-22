@@ -118,6 +118,8 @@ class Features():
         df.index.name = 'attribute'
         df.columns.name = 'respondent'
 
+        df = tools.sort_index_and_columns(df)
+
         return df
 
     def __clean_features_dataframe(self, df):
@@ -165,6 +167,8 @@ class Features():
 
             df.rename(columns=exemplar_translation, inplace=True)
             df.rename(index=features_translation, inplace=True)
+
+        df = tools.sort_index_and_columns(df)
 
         return df
 

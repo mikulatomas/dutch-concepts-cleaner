@@ -111,6 +111,8 @@ class PairwiseSimilarityLoader():
         # Retype to int
         df = df.astype(int)
 
+        df = tools.sort_index_and_columns(df)
+
         return df
 
 

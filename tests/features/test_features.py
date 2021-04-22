@@ -13,5 +13,6 @@ def test_feature_label_content(dc):
         assert set(dc.category_features.domain[name].data.index) == set(
             data.data.index)
 
-    # dc.exemplar_features.category
-    # dc.category_features.category
+    for name, data in dc.exemplar_features.category.items():
+        assert set(dc.category_features.category[name].data.index) == set(
+            data.data.index)

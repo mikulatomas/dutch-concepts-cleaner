@@ -17,6 +17,13 @@ def drop_all_nan(df):
     return df
 
 
+def sort_index_and_columns(df):
+    df = df.sort_index(axis=0)
+    df = df.sort_index(axis=1)
+
+    return df
+
+
 def get_fixed_translation(original, english, fixes):
     assert len(original) == len(english)
 

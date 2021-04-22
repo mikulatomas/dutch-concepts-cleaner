@@ -78,6 +78,8 @@ class TypicalityLoader():
 
         df = df.astype(float)
 
+        df = tools.sort_index_and_columns(df)
+
         return df
 
 
