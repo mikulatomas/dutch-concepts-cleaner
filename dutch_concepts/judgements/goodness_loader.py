@@ -8,18 +8,18 @@ import dutch_concepts as dc
 import dutch_concepts.tools as tools
 
 
-class TypicalityLoader():
+class GoodnessLoader():
     def __init__(self, parent_dataset):
         self.parent_dataset = parent_dataset
 
     def load(self):
-        dir_name = 'exemplarTypicalityRatings'
+        dir_name = 'exemplarGoodnessRatings'
 
         ratings = {}
 
         for csv_f in glob(os.path.join(self.parent_dataset.sub_dataset_dir, dir_name, '*.CSV')):
             result = re.search(
-                '^exemplarTypicalityRatings-(.*).CSV$', os.path.basename(csv_f))
+                '^exemplarGoodnessRatings-(.*).CSV$', os.path.basename(csv_f))
             concept_name = result.group(1)
 
             if concept_name == 'amphibians':
@@ -31,7 +31,7 @@ class TypicalityLoader():
 
             df = self.__clean_dataframe(df)
 
-            ratings[concept_name] = TypicalityJudgementsDataset(
+            ratings[concept_name] = GoodnessDataset(
                 df, reliability, concept_name)
 
         return ratings
@@ -83,17 +83,17 @@ class TypicalityLoader():
         return df
 
 
-class TypicalityJudgementsDataset():
+class GoodnessDataset():
     def __init__(self, data, reliability, name):
         self.name = name
         self.reliability = reliability
         self.data = data
 
     def __str__(self):
-        return "TypicalityJudgementsDataset({})".format(self.name)
+        return "GoodnessDataset({})".format(self.name)
 
     def __repr__(self):
-        return "TypicalityJudgementsDataset({})".format(self.name)
+        return "GoodnessDataset({})".format(self.name)
 
     def __len__(self):
         return len(self.data)

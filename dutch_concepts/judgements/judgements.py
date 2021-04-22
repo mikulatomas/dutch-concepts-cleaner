@@ -15,3 +15,7 @@ class Judgements():
 
         self.pairwise_similarity = dcj.PairwiseSimilarityLoader(
             self).load()
+
+        self.goodness = dcj.GoodnessLoader(
+            self).load()
+        # self.goodness_rank_order = pass

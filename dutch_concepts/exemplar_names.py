@@ -54,4 +54,6 @@ EXEMPLAR_TRANSLATION_FIXES = {
     "step": "kick scooter",
     # typo: "adder" translated as "viger"
     "adder": "viper",
+    # typo: missing space in "paintbrush"
+    "verfborstel": "paint brush"
 }
