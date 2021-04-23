@@ -23,3 +23,5 @@ class Judgements():
             self).load()
 
         self.familiarity = dcj.FamiliarityLoader(self).load()
+
+        self.age_of_acquisition = dcj.AgeOfAcquisitionLoader(self).load()

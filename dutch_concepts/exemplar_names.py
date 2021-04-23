@@ -55,5 +55,9 @@ EXEMPLAR_TRANSLATION_FIXES = {
     # typo: "adder" translated as "viger"
     "adder": "viper",
     # typo: missing space in "paintbrush"
-    "verfborstel": "paint brush"
+    "verfborstel": "paint brush",
+    # duplicity: "lychee" is translated both as "lychee" and "litchi"
+    "lychee": "lychee",
+    # duplicity: "clementine" is translated both as "clementine" and "mandarine"
+    "clementine": "mandarine"
 }

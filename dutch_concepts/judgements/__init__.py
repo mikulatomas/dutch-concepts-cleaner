@@ -4,3 +4,4 @@ from .familiarity_loader import FamiliarityLoader
 from .pairwise_similarity_loader import PairwiseSimilarityLoader
 from .goodness_loader import GoodnessLoader
 from .goodness_rank_order import GoodnessRankOrderLoader
+from .age_of_acquisition import AgeOfAcquisitionLoader
