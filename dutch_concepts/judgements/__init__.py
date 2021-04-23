@@ -1,4 +1,6 @@
 from .judgements import Judgements
 from .typicality_loader import TypicalityLoader
-from .goodness_loader import GoodnessLoader
+from .familiarity_loader import FamiliarityLoader
 from .pairwise_similarity_loader import PairwiseSimilarityLoader
+from .goodness_loader import GoodnessLoader
+from .goodness_rank_order import GoodnessRankOrderLoader

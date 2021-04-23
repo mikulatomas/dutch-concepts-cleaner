@@ -18,4 +18,8 @@ class Judgements():
 
         self.goodness = dcj.GoodnessLoader(
             self).load()
-        # self.goodness_rank_order = pass
+
+        self.goodness_rank_order = dcj.GoodnessRankOrderLoader(
+            self).load()
+
+        self.familiarity = dcj.FamiliarityLoader(self).load()

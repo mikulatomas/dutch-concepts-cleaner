@@ -70,7 +70,7 @@ class TypicalityLoader():
         new_columns = []
         for i, name in enumerate(df.columns):
             if 'Unnamed' in name:
-                new_columns.append(f"subject {i}")
+                new_columns.append(f"respondent {i}")
             else:
                 new_columns.append(name)
 
