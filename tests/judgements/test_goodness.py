@@ -2,11 +2,13 @@ import pytest
 from dutch_concepts import DutchConcepts
 
 
-@pytest.mark.parametrize(
-    'lang', ['en', 'nl'])
-def test_goodness_label_content(lang):
-    dc = DutchConcepts(root='tests', download=True, language=lang)
+dc_en = DutchConcepts(root='tests', download=True, language='en')
+dc_nl = DutchConcepts(root='tests', download=True, language='nl')
 
+
+@pytest.mark.parametrize(
+    'dc', [dc_en, dc_nl])
+def test_goodness_label_content(dc):
     compare_to = [
         dc.exemplar_features.category,
         dc.category_features.category,

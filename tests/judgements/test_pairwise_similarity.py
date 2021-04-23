@@ -2,20 +2,20 @@ import pytest
 from dutch_concepts import DutchConcepts
 
 
-@pytest.mark.parametrize(
-    'lang', ['en', 'nl'])
-def test_pairwise_similarity_same_labels(lang):
-    dc = DutchConcepts(root='tests', download=True, language=lang)
+dc_en = DutchConcepts(root='tests', download=True, language='en')
+dc_nl = DutchConcepts(root='tests', download=True, language='nl')
 
+
+@pytest.mark.parametrize(
+    'dc', [dc_en, dc_nl])
+def test_pairwise_similarity_same_labels(dc):
     for _, data in dc.judgements.pairwise_similarity.items():
         assert set(data.data.index.values) == set(data.data.columns.values)
 
 
 @pytest.mark.parametrize(
-    'lang', ['en', 'nl'])
-def test_pairwise_similarity_label_content(lang):
-    dc = DutchConcepts(root='tests', download=True, language=lang)
-
+    'dc', [dc_en, dc_nl])
+def test_pairwise_similarity_label_content(dc):
     compare_to = [
         dc.exemplar_features.category,
         dc.category_features.category,

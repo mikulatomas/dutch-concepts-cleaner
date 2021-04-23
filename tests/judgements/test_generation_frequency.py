@@ -8,13 +8,13 @@ dc_nl = DutchConcepts(root='tests', download=True, language='nl')
 
 @pytest.mark.parametrize(
     'dc', [dc_en, dc_nl])
-def test_age_of_acquisition_label_content(dc):
+def test_generation_frequency_label_content(dc):
     compare_to = [
         dc.exemplar_features.category,
         dc.category_features.category,
     ]
 
     for data in compare_to:
-        for concept_name, age_of_acquisition in dc.judgements.age_of_acquisition.items():
+        for concept_name, generation_frequency in dc.judgements.generation_frequency.items():
             assert set(data[concept_name].data.index) == set(
-                age_of_acquisition.data.index)
+                generation_frequency.data.index)

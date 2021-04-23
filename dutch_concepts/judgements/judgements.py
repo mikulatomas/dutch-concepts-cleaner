@@ -25,3 +25,6 @@ class Judgements():
         self.familiarity = dcj.FamiliarityLoader(self).load()
 
         self.age_of_acquisition = dcj.AgeOfAcquisitionLoader(self).load()
+
+        self.generation_frequency, self.associative_strength = dcj.GenerationFrequencyAndAssociativeLoader(
+            self).load()
