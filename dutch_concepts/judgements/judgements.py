@@ -28,3 +28,5 @@ class Judgements():
 
         self.generation_frequency, self.associative_strength = dcj.GenerationFrequencyAndAssociativeLoader(
             self).load()
+
+        self.imageability = dcj.ImageabilityLoader(self).load()
