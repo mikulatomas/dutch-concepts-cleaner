@@ -6,20 +6,21 @@ import pandas as pd
 
 import dutch_concepts as dc
 import dutch_concepts.tools as tools
+from dutch_concepts.experiment_data import ExperimentData
 
 
 class GoodnessLoader():
-    def __init__(self, parent_dataset):
-        self.parent_dataset = parent_dataset
+    def __init__(self, experiment_set):
+        self.experiment_set = experiment_set
 
     def load(self):
         dir_name = 'exemplarGoodnessRatings'
 
         ratings = {}
 
-        for csv_f in glob(os.path.join(self.parent_dataset.sub_dataset_dir, dir_name, '*.CSV')):
+        for csv_f in glob(os.path.join(self.experiment_set.sub_dataset_dir, dir_name, '*.CSV')):
             result = re.search(
-                '^exemplarGoodnessRatings-(.*).CSV$', os.path.basename(csv_f))
+                f'^{dir_name}-(.*).CSV$', os.path.basename(csv_f))
             concept_name = result.group(1)
 
             if concept_name == 'amphibians':
@@ -31,7 +32,7 @@ class GoodnessLoader():
 
             df = self.__clean_dataframe(df)
 
-            ratings[concept_name] = GoodnessDataset(
+            ratings[concept_name] = GoodnessData(
                 df, reliability, concept_name)
 
         return ratings
@@ -55,7 +56,7 @@ class GoodnessLoader():
         # Exemplar names fix
         df.rename(index=dc.EXEMPLAR_NAMES_FIXES, inplace=True)
 
-        if self.parent_dataset.dataset.language == 'en':
+        if self.experiment_set.dataset.language == 'en':
             exemplar_translation = tools.get_fixed_translation(
                 df.index, df.iloc[:, 1], dc.EXEMPLAR_TRANSLATION_FIXES)
 
@@ -64,7 +65,7 @@ class GoodnessLoader():
 
         df.index.name = 'object'
 
-        if self.parent_dataset.dataset.language == 'en':
+        if self.experiment_set.dataset.language == 'en':
             df.rename(index=exemplar_translation, inplace=True)
 
         new_columns = []
@@ -83,17 +84,7 @@ class GoodnessLoader():
         return df
 
 
-class GoodnessDataset():
+class GoodnessData(ExperimentData):
     def __init__(self, data, reliability, name):
-        self.name = name
+        super().__init__(data, name)
         self.reliability = reliability
-        self.data = data
-
-    def __str__(self):
-        return "GoodnessDataset({})".format(self.name)
-
-    def __repr__(self):
-        return "GoodnessDataset({})".format(self.name)
-
-    def __len__(self):
-        return len(self.data)

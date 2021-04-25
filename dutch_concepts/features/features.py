@@ -7,6 +7,7 @@ from glob import glob
 
 import dutch_concepts as dc
 import dutch_concepts.tools as tools
+from dutch_concepts.experiment_data import ExperimentData
 
 
 class Features():
@@ -39,7 +40,7 @@ class Features():
 
             df = self.__clean_importance_dataframe(df)
 
-            categories[concept_name] = FeatureImportanceDataset(
+            categories[concept_name] = FeatureImportanceData(
                 df, concept_name, self.feature_type)
 
         return categories
@@ -61,7 +62,7 @@ class Features():
             df.drop('freq', axis=1, inplace=True)
             df = df.transpose()
 
-            features[concept_name] = FeaturesDataset(
+            features[concept_name] = FeaturesData(
                 df,
                 frequencies,
                 concept_name,
@@ -87,7 +88,7 @@ class Features():
             df.drop('freq', axis=1, inplace=True)
             df = df.transpose()
 
-            features[concept_name] = FeaturesDataset(
+            features[concept_name] = FeaturesData(
                 df,
                 frequencies,
                 concept_name,
@@ -173,34 +174,14 @@ class Features():
         return df
 
 
-class FeaturesDataset():
+class FeaturesData(ExperimentData):
     def __init__(self, data, frequencies, name, feature_type):
-        self.name = name
+        super().__init__(data, name)
         self.frequencies = frequencies
-        self.data = data
         self.feature_type = feature_type
 
-    def __str__(self):
-        return "DutchFeatureDataset({})".format(self.name)
 
-    def __repr__(self):
-        return "DutchFeatureDataset({})".format(self.name)
-
-    def __len__(self):
-        return len(self.data)
-
-
-class FeatureImportanceDataset():
+class FeatureImportanceData(ExperimentData):
     def __init__(self, data, name, feature_type):
-        self.name = name
-        self.data = data
+        super().__init__(data, name)
         self.feature_type = feature_type
-
-    def __str__(self):
-        return "DutchFeatureImportanceDataset({})".format(self.name)
-
-    def __repr__(self):
-        return "DutchFeatureImportanceDataset({})".format(self.name)
-
-    def __len__(self):
-        return len(self.data)

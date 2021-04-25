@@ -7,11 +7,12 @@ import numpy as np
 
 import dutch_concepts as dc
 import dutch_concepts.tools as tools
+from dutch_concepts.experiment_data import ExperimentData
 
 
 class GenerationFrequencyAndAssociativeLoader():
-    def __init__(self, parent_dataset):
-        self.parent_dataset = parent_dataset
+    def __init__(self, experiment_set):
+        self.experiment_set = experiment_set
 
     def load(self):
         dir_name = 'exemplarGenerationFreqAssociationsFreq'
@@ -19,9 +20,9 @@ class GenerationFrequencyAndAssociativeLoader():
         generation_freq = {}
         association_freq = {}
 
-        for csv_f in glob(os.path.join(self.parent_dataset.sub_dataset_dir, dir_name, '*.CSV')):
+        for csv_f in glob(os.path.join(self.experiment_set.sub_dataset_dir, dir_name, '*.CSV')):
             result = re.search(
-                '^exemplarGenerationFreqAssociationsFreq-(.*).CSV$', os.path.basename(csv_f))
+                f'^{dir_name}-(.*).CSV$', os.path.basename(csv_f))
             concept_name = result.group(1)
 
             if concept_name == 'amphibians' or concept_name == 'animals':
@@ -37,9 +38,9 @@ class GenerationFrequencyAndAssociativeLoader():
             df_assoc_freq = df.drop(
                 ['generation frequency', 'mean rank position'], axis=1)
 
-            generation_freq[concept_name] = GenerationFrequencyDataset(
+            generation_freq[concept_name] = GenerationFrequencyData(
                 df_gen_freq, concept_name)
-            association_freq[concept_name] = AssociativeStrengthDataset(
+            association_freq[concept_name] = AssociativeStrengthData(
                 df_assoc_freq, concept_name)
 
         return generation_freq, association_freq
@@ -54,7 +55,7 @@ class GenerationFrequencyAndAssociativeLoader():
         # Exemplar names fix
         df.rename(index=dc.EXEMPLAR_NAMES_FIXES, inplace=True)
 
-        if self.parent_dataset.dataset.language == 'en':
+        if self.experiment_set.dataset.language == 'en':
             exemplar_translation = tools.get_fixed_translation(
                 df.index, df.iloc[:, 1], dc.EXEMPLAR_TRANSLATION_FIXES)
             df.rename(index=exemplar_translation, inplace=True)
@@ -71,31 +72,9 @@ class GenerationFrequencyAndAssociativeLoader():
         return df
 
 
-class GenerationFrequencyDataset():
-    def __init__(self, data, name):
-        self.name = name
-        self.data = data
-
-    def __str__(self):
-        return "GenerationFrequencyDataset({})".format(self.name)
-
-    def __repr__(self):
-        return "GenerationFrequencyDataset({})".format(self.name)
-
-    def __len__(self):
-        return len(self.data)
+class GenerationFrequencyData(ExperimentData):
+    pass
 
 
-class AssociativeStrengthDataset():
-    def __init__(self, data, name):
-        self.name = name
-        self.data = data
-
-    def __str__(self):
-        return "AssociativeStrengthDataset({})".format(self.name)
-
-    def __repr__(self):
-        return "AssociativeStrengthDataset({})".format(self.name)
-
-    def __len__(self):
-        return len(self.data)
+class AssociativeStrengthData(ExperimentData):
+    pass

@@ -6,20 +6,21 @@ import pandas as pd
 
 import dutch_concepts as dc
 import dutch_concepts.tools as tools
+from dutch_concepts.experiment_data import ExperimentData
 
 
 class GoodnessRankOrderLoader():
-    def __init__(self, parent_dataset):
-        self.parent_dataset = parent_dataset
+    def __init__(self, experiment_set):
+        self.experiment_set = experiment_set
 
     def load(self):
         dir_name = 'exemplarGoodnessRankOrder'
 
         ratings = {}
 
-        for csv_f in glob(os.path.join(self.parent_dataset.sub_dataset_dir, dir_name, '*.CSV')):
+        for csv_f in glob(os.path.join(self.experiment_set.sub_dataset_dir, dir_name, '*.CSV')):
             result = re.search(
-                '^exemplarGoodnessRankOrder-(.*).CSV$', os.path.basename(csv_f))
+                f'^{dir_name}-(.*).CSV$', os.path.basename(csv_f))
             concept_name = result.group(1)
 
             if concept_name == 'amphibians':
@@ -30,7 +31,7 @@ class GoodnessRankOrderLoader():
 
             df = self.__clean_dataframe(df)
 
-            ratings[concept_name] = GoodnessRankOrderDataset(
+            ratings[concept_name] = GoodnessRankOrderData(
                 df, concept_name)
 
         return ratings
@@ -44,13 +45,13 @@ class GoodnessRankOrderLoader():
 
         original_english_exemplars = df.iloc[:, 0]
 
-        if self.parent_dataset.dataset.language == 'en':
+        if self.experiment_set.dataset.language == 'en':
             exemplars_translation = tools.get_fixed_translation(
                 df.index, original_english_exemplars, dc.EXEMPLAR_TRANSLATION_FIXES)
 
         df.drop(df.columns[0], axis=1, inplace=True)
 
-        if self.parent_dataset.dataset.language == 'en':
+        if self.experiment_set.dataset.language == 'en':
             df.rename(index=exemplars_translation, inplace=True)
 
         df.columns = range(df.shape[1])
@@ -63,16 +64,5 @@ class GoodnessRankOrderLoader():
         return df
 
 
-class GoodnessRankOrderDataset():
-    def __init__(self, data, name):
-        self.name = name
-        self.data = data
-
-    def __str__(self):
-        return "GoodnessRankOrderDataset({})".format(self.name)
-
-    def __repr__(self):
-        return "GoodnessRankOrderDataset({})".format(self.name)
-
-    def __len__(self):
-        return len(self.data)
+class GoodnessRankOrderData(ExperimentData):
+    pass

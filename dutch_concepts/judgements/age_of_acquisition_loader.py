@@ -7,20 +7,21 @@ import numpy as np
 
 import dutch_concepts as dc
 import dutch_concepts.tools as tools
+from dutch_concepts.experiment_data import ExperimentData
 
 
 class AgeOfAcquisitionLoader():
-    def __init__(self, parent_dataset):
-        self.parent_dataset = parent_dataset
+    def __init__(self, experiment_set):
+        self.experiment_set = experiment_set
 
     def load(self):
         dir_name = 'exemplarWFAoAPercKnownRatings'
 
         ratings = {}
 
-        for csv_f in glob(os.path.join(self.parent_dataset.sub_dataset_dir, dir_name, '*.CSV')):
+        for csv_f in glob(os.path.join(self.experiment_set.sub_dataset_dir, dir_name, '*.CSV')):
             result = re.search(
-                '^exemplarWFAoAPercKnownRatings-(.*).CSV$', os.path.basename(csv_f))
+                f'^{dir_name}-(.*).CSV$', os.path.basename(csv_f))
             concept_name = result.group(1)
 
             if concept_name == 'amphibians':
@@ -33,7 +34,7 @@ class AgeOfAcquisitionLoader():
 
             df = self.__clean_dataframe(df)
 
-            ratings[concept_name] = AgeOfAcquisitionDataset(
+            ratings[concept_name] = AgeOfAcquisitionData(
                 df, reliability, concept_name)
 
         return ratings
@@ -61,7 +62,7 @@ class AgeOfAcquisitionLoader():
         # Exemplar names fix
         df.rename(index=dc.EXEMPLAR_NAMES_FIXES, inplace=True)
 
-        if self.parent_dataset.dataset.language == 'en':
+        if self.experiment_set.dataset.language == 'en':
             exemplar_translation = tools.get_fixed_translation(
                 df.index, df.iloc[:, 1], dc.EXEMPLAR_TRANSLATION_FIXES)
             df.rename(index=exemplar_translation, inplace=True)
@@ -79,17 +80,7 @@ class AgeOfAcquisitionLoader():
         return df
 
 
-class AgeOfAcquisitionDataset():
+class AgeOfAcquisitionData(ExperimentData):
     def __init__(self, data, reliability, name):
-        self.name = name
+        super().__init__(data, name)
         self.reliability = reliability
-        self.data = data
-
-    def __str__(self):
-        return "AgeOfAcquisitionDataset({})".format(self.name)
-
-    def __repr__(self):
-        return "AgeOfAcquisitionDataset({})".format(self.name)
-
-    def __len__(self):
-        return len(self.data)

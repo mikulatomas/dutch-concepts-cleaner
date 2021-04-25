@@ -6,11 +6,12 @@ import pandas as pd
 
 import dutch_concepts as dc
 import dutch_concepts.tools as tools
+from dutch_concepts.experiment_data import ExperimentData
 
 
 class PairwiseSimilarityLoader():
-    def __init__(self, parent_dataset):
-        self.parent_dataset = parent_dataset
+    def __init__(self, experiment_set):
+        self.experiment_set = experiment_set
 
     def load(self):
         dir_name = 'pairwise similarities'
@@ -18,7 +19,7 @@ class PairwiseSimilarityLoader():
         similarities = {}
 
         load_dir = os.path.join(
-            self.parent_dataset.dataset.dataset_dir, dc.DutchConcepts.CSV_DIR, dir_name)
+            self.experiment_set.dataset.dataset_dir, dc.DutchConcepts.CSV_DIR, dir_name)
 
         for csv_f in glob(os.path.join(load_dir, '*', '*.CSV')):
             result = re.search(
@@ -45,7 +46,7 @@ class PairwiseSimilarityLoader():
         similarities_filtered = {}
 
         for concept_name, datasets in similarities.items():
-            similarities_filtered[concept_name] = SimilarityJudgementsDataset(
+            similarities_filtered[concept_name] = SimilarityJudgementsData(
                 self.__calculate_mean(datasets), datasets, concept_name)
 
         return similarities_filtered
@@ -82,7 +83,7 @@ class PairwiseSimilarityLoader():
         # Exemplar names fix
         df.rename(index=dc.EXEMPLAR_NAMES_FIXES, inplace=True)
 
-        if self.parent_dataset.dataset.language == 'en':
+        if self.experiment_set.dataset.language == 'en':
             exemplar_translation = tools.get_fixed_translation(
                 df.index[2:], df.iloc[0 if column_row == 1 else 1][2:], dc.EXEMPLAR_TRANSLATION_FIXES)
 
@@ -99,7 +100,7 @@ class PairwiseSimilarityLoader():
         df.drop(df.index[0], axis=0, inplace=True)
         df.drop(df.index[0], axis=0, inplace=True)
 
-        if self.parent_dataset.dataset.language == 'en':
+        if self.experiment_set.dataset.language == 'en':
             # Translation
             df.rename(index=exemplar_translation, inplace=True)
             df.rename(columns=exemplar_translation, inplace=True)
@@ -116,17 +117,7 @@ class PairwiseSimilarityLoader():
         return df
 
 
-class SimilarityJudgementsDataset():
+class SimilarityJudgementsData(ExperimentData):
     def __init__(self, data, respondents, name):
-        self.name = name
-        self.data = data
+        super().__init__(data, name)
         self.respondents = respondents
-
-    def __str__(self):
-        return "SimilarityJudgementsDataset({})".format(self.name)
-
-    def __repr__(self):
-        return "SimilarityJudgementsDataset({})".format(self.name)
-
-    def __len__(self):
-        return len(self.data)
