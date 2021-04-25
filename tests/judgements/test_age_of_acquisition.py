@@ -2,19 +2,15 @@ import pytest
 from dutch_concepts import DutchConcepts
 
 
-dc_en = DutchConcepts(root='tests', download=True, language='en')
-dc_nl = DutchConcepts(root='tests', download=True, language='nl')
+def test_age_of_acquisition_label_content(dc_languages):
 
+    for dc in dc_languages:
+        compare_to = [
+            dc.exemplar_features.category,
+            dc.category_features.category,
+        ]
 
-@pytest.mark.parametrize(
-    'dc', [dc_en, dc_nl])
-def test_age_of_acquisition_label_content(dc):
-    compare_to = [
-        dc.exemplar_features.category,
-        dc.category_features.category,
-    ]
-
-    for data in compare_to:
-        for concept_name, age_of_acquisition in dc.judgements.age_of_acquisition.items():
-            assert set(data[concept_name].data.index) == set(
-                age_of_acquisition.data.index)
+        for data in compare_to:
+            for concept_name, age_of_acquisition in dc.judgements.age_of_acquisition.items():
+                assert set(data[concept_name].data.index) == set(
+                    age_of_acquisition.data.index)
