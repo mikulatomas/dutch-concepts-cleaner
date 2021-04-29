@@ -10,6 +10,6 @@ def test_imageability_label_content(dc_languages):
         ]
 
         for data in compare_to:
-            for concept_name, imageability in dc.judgements.imageability.items():
-                assert set(data[concept_name].data.index) == set(
+            for category_name, imageability in dc.judgements.imageability.items():
+                assert set(data[category_name].data.index) == set(
                     imageability.data.index)

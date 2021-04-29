@@ -10,6 +10,6 @@ def test_generation_frequency_label_content(dc_languages):
         ]
 
         for data in compare_to:
-            for concept_name, generation_frequency in dc.judgements.generation_frequency.items():
-                assert set(data[concept_name].data.index) == set(
+            for category_name, generation_frequency in dc.judgements.generation_frequency.items():
+                assert set(data[category_name].data.index) == set(
                     generation_frequency.data.index)

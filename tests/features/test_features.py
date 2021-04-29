@@ -1,5 +1,5 @@
 import pytest
-from dutch_concepts import DutchConcepts
+from dutch_concepts import DutchConcepts, Domain
 
 
 def test_feature_label_content(dc_languages):
@@ -14,19 +14,19 @@ def test_feature_label_content(dc_languages):
 
 
 def test_domains_label_content(dc_languages):
-    domains = {
-        'artifacts': ['clothing', 'kitchen utensils', 'musical instruments', 'tools', 'vehicles', 'weapons'],
-        'animal': ['birds', 'fish', 'insects', 'mammals', 'reptiles']
-    }
+    # domains = {
+    #     'artifacts': ['clothing', 'kitchen utensils', 'musical instruments', 'tools', 'vehicles', 'weapons'],
+    #     'animal': ['birds', 'fish', 'insects', 'mammals', 'reptiles']
+    # }
 
     for dc in dc_languages:
         for dataset in [dc.exemplar_features, dc.category_features]:
-            for name, domain_data in dataset.domain.items():
+            for domain, domain_data in dataset.domain.items():
                 labels = set(domain_data.data.index)
 
                 compare_to = set()
-                for concept_name in domains[name]:
+                for category in domain.members:
                     compare_to.update(
-                        dataset.category[concept_name].data.index)
+                        dataset.category[category].data.index)
 
                 assert labels == compare_to

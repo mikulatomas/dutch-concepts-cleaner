@@ -22,9 +22,9 @@ class AgeOfAcquisitionLoader():
         for csv_f in glob(os.path.join(self.experiment_set.sub_dataset_dir, dir_name, '*.CSV')):
             result = re.search(
                 f'^{dir_name}-(.*).CSV$', os.path.basename(csv_f))
-            concept_name = result.group(1)
+            category_name = result.group(1)
 
-            if concept_name == 'amphibians':
+            if category_name == 'amphibians':
                 continue
 
             df = pd.read_csv(
@@ -34,15 +34,16 @@ class AgeOfAcquisitionLoader():
 
             df = self.__clean_dataframe(df)
 
-            ratings[concept_name] = AgeOfAcquisitionData(
-                df, reliability, concept_name)
+            category_enum = dc.Category.from_str(category_name)
+            ratings[category_enum] = AgeOfAcquisitionData(
+                df, reliability, category_enum)
 
         return ratings
 
     def __extract_reliability(self, df):
         reliability = -1
         for col in df.columns:
-            match = re.search('^\(estimated reliability = (.*)\)$', col)
+            match = re.search('^(estimated reliability = (.*))$', col)
 
             if match:
                 reliability = float(match.group(1).replace(',', '.'))

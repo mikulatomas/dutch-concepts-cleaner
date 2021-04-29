@@ -30,18 +30,16 @@ class Features():
             result = re.search(
                 f'^{self.feature_type.value}FeatureImportanceRatings-(.*).CSV$', os.path.basename(csv_f))
 
-            concept_name = result.group(1)
-            # TODO generalize to all
-            if dc.CATEGORY_NAMES_FIXES.get(concept_name):
-                concept_name = dc.CATEGORY_NAMES_FIXES.get(concept_name)
+            category_name = result.group(1)
 
             df = pd.read_csv(
                 csv_f, encoding=dc.DutchConcepts.ENCODING, header=None, dtype='unicode', index_col=0)
 
             df = self.__clean_importance_dataframe(df)
 
-            categories[concept_name] = FeatureImportanceData(
-                df, concept_name, self.feature_type)
+            category_enum = dc.Category.from_str(category_name)
+            categories[category_enum] = FeatureImportanceData(
+                df, category_enum, self.feature_type)
 
         return categories
 
@@ -52,7 +50,7 @@ class Features():
             result = re.search(
                 f'^({self.feature_type.value})(Label)*(.*)Diagonal(.*).CSV$', os.path.basename(csv_f))
 
-            concept_name = tools.format_concept_name(result.group(3))
+            category_name = tools.format_category_name(result.group(3))
 
             df = pd.read_csv(
                 csv_f, encoding=dc.DutchConcepts.ENCODING, header=None, skipinitialspace=True, dtype='unicode')
@@ -62,23 +60,23 @@ class Features():
             df.drop('freq', axis=1, inplace=True)
             df = df.transpose()
 
-            features[concept_name] = FeaturesData(
+            category_enum = dc.Category.from_str(category_name)
+            features[category_enum] = FeaturesData(
                 df,
                 frequencies,
-                concept_name,
+                category_enum,
                 self.feature_type)
 
         return features
 
     def __domains_features_loader(self):
         features = {}
-        # translate = {'animal': 'animal', 'artifacts': 'artifact'}
 
         for csv_f in glob(os.path.join(self._features_dir, '*', f'*{self.feature_type.value.capitalize()}*-sum.CSV')):
             result = re.search(
                 f'^(.*)(Animal|Artifacts)({self.feature_type.value.capitalize()})(.*).CSV$', os.path.basename(csv_f))
 
-            concept_name = result.group(2).lower()
+            domain_name = result.group(2).lower()
 
             df = pd.read_csv(
                 csv_f, encoding=dc.DutchConcepts.ENCODING, header=None)
@@ -88,10 +86,11 @@ class Features():
             df.drop('freq', axis=1, inplace=True)
             df = df.transpose()
 
-            features[concept_name] = FeaturesData(
+            domain_enum = dc.Domain.from_str(domain_name)
+            features[domain_enum] = FeaturesData(
                 df,
                 frequencies,
-                concept_name,
+                domain_enum,
                 self.feature_type)
 
         return features

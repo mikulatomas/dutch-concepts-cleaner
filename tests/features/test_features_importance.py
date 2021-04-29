@@ -13,5 +13,5 @@ dc_nl = DutchConcepts(root='tests', download=True, language='nl')
         (dc_nl.category_features.importance, dc_nl.category_features.category)
     ])
 def test_feature_importance_label_content(dc, to):
-    for concept_name, data in dc.items():
-        assert set(data.data.index) == set(to[concept_name].data.columns)
+    for category_name, data in dc.items():
+        assert set(data.data.index) == set(to[category_name].data.columns)

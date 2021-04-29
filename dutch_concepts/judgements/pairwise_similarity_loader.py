@@ -25,9 +25,9 @@ class PairwiseSimilarityLoader():
             result = re.search(
                 '^pairwiseSimilarities(.*)-(.*).CSV$', os.path.basename(csv_f))
 
-            concept_name = tools.format_concept_name(result.group(1))
+            category_name = tools.format_category_name(result.group(1))
 
-            if concept_name == 'amphibians':
+            if category_name == 'amphibians':
                 continue
 
             subject_number = result.group(2)
@@ -35,19 +35,20 @@ class PairwiseSimilarityLoader():
             df = pd.read_csv(
                 csv_f, encoding=dc.DutchConcepts.ENCODING, header=None, skipinitialspace=True, error_bad_lines=False, dtype='unicode')
 
-            df = self.__clean_dataframe(df, concept_name)
-            name = f"{concept_name.capitalize()}PairwiseSimilarities-{subject_number}"
+            df = self.__clean_dataframe(df, category_name)
+            name = f"{category_name.capitalize()}PairwiseSimilarities-{subject_number}"
 
-            if similarities.get(concept_name):
-                similarities.get(concept_name)[name] = df
+            if similarities.get(category_name):
+                similarities.get(category_name)[name] = df
             else:
-                similarities[concept_name] = {name: df}
+                similarities[category_name] = {name: df}
 
         similarities_filtered = {}
 
-        for concept_name, datasets in similarities.items():
-            similarities_filtered[concept_name] = SimilarityJudgementsData(
-                self.__calculate_mean(datasets), datasets, concept_name)
+        for category_name, datasets in similarities.items():
+            category_enum = dc.Category.from_str(category_name)
+            similarities_filtered[category_enum] = SimilarityJudgementsData(
+                self.__calculate_mean(datasets), datasets, category_enum)
 
         return similarities_filtered
 
@@ -61,14 +62,14 @@ class PairwiseSimilarityLoader():
 
         return mean
 
-    def __clean_dataframe(self, df, concept_name):
+    def __clean_dataframe(self, df, category_name):
         df = tools.drop_all_nan(df)
 
         # hack because csv are messy
-        if concept_name in ['birds', 'clothing', 'fish', 'musical instruments', 'vehicles']:
+        if category_name in ['birds', 'clothing', 'fish', 'musical instruments', 'vehicles']:
             index_col = 1
             column_row = 1
-        elif concept_name in ['fruit', 'professions', 'sports', 'vegetables']:
+        elif category_name in ['fruit', 'professions', 'sports', 'vegetables']:
             index_col = 0
             column_row = 0
         else:

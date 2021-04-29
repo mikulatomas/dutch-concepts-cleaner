@@ -10,6 +10,6 @@ def test_associative_strength_label_content(dc_languages):
         ]
 
         for data in compare_to:
-            for concept_name, associative_strength in dc.judgements.associative_strength.items():
-                assert set(data[concept_name].data.index) == set(
+            for category_name, associative_strength in dc.judgements.associative_strength.items():
+                assert set(data[category_name].data.index) == set(
                     associative_strength.data.index)

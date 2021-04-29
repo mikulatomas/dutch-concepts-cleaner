@@ -16,6 +16,6 @@ def test_pairwise_similarity_label_content(dc_languages):
         ]
 
         for data in compare_to:
-            for concept_name, similarity in dc.judgements.pairwise_similarity.items():
-                assert set(data[concept_name].data.index) == set(
+            for category_name, similarity in dc.judgements.pairwise_similarity.items():
+                assert set(data[category_name].data.index) == set(
                     similarity.data.index)

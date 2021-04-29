@@ -21,9 +21,9 @@ class GoodnessRankOrderLoader():
         for csv_f in glob(os.path.join(self.experiment_set.sub_dataset_dir, dir_name, '*.CSV')):
             result = re.search(
                 f'^{dir_name}-(.*).CSV$', os.path.basename(csv_f))
-            concept_name = result.group(1)
+            category_name = result.group(1)
 
-            if concept_name == 'amphibians':
+            if category_name == 'amphibians':
                 continue
 
             df = pd.read_csv(
@@ -31,8 +31,9 @@ class GoodnessRankOrderLoader():
 
             df = self.__clean_dataframe(df)
 
-            ratings[concept_name] = GoodnessRankOrderData(
-                df, concept_name)
+            category_enum = dc.Category.from_str(category_name)
+            ratings[category_enum] = GoodnessRankOrderData(
+                df, category_enum)
 
         return ratings
 

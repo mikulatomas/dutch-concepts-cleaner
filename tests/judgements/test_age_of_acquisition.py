@@ -11,6 +11,6 @@ def test_age_of_acquisition_label_content(dc_languages):
         ]
 
         for data in compare_to:
-            for concept_name, age_of_acquisition in dc.judgements.age_of_acquisition.items():
-                assert set(data[concept_name].data.index) == set(
+            for category_name, age_of_acquisition in dc.judgements.age_of_acquisition.items():
+                assert set(data[category_name].data.index) == set(
                     age_of_acquisition.data.index)

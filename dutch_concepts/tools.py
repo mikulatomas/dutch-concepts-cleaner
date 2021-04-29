@@ -2,12 +2,12 @@
 import re
 
 
-def format_concept_name(concept_name):
-    if concept_name.islower():
-        return concept_name
+def format_category_name(category_name):
+    if category_name.islower():
+        return category_name
     else:
         return ' '.join(re.findall(
-            '[A-Z][^A-Z]*', concept_name)).lower()
+            '[A-Z][^A-Z]*', category_name)).lower()
 
 
 def drop_all_nan(df):

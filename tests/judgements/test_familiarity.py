@@ -10,6 +10,6 @@ def test_familiarity_label_content(dc_languages):
         ]
 
         for data in compare_to:
-            for concept_name, familiarity in dc.judgements.familiarity.items():
-                assert set(data[concept_name].data.index) == set(
+            for category_name, familiarity in dc.judgements.familiarity.items():
+                assert set(data[category_name].data.index) == set(
                     familiarity.data.index)

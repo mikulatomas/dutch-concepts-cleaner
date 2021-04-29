@@ -10,6 +10,6 @@ def test_goodnes_rank_order_label_content(dc_languages):
         ]
 
         for data in compare_to:
-            for concept_name, goodness_rank_order in dc.judgements.goodness_rank_order.items():
-                assert set(data[concept_name].data.index) == set(
+            for category_name, goodness_rank_order in dc.judgements.goodness_rank_order.items():
+                assert set(data[category_name].data.index) == set(
                     goodness_rank_order.data.index)

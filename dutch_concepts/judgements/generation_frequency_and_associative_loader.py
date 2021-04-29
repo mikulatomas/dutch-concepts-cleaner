@@ -23,9 +23,9 @@ class GenerationFrequencyAndAssociativeLoader():
         for csv_f in glob(os.path.join(self.experiment_set.sub_dataset_dir, dir_name, '*.CSV')):
             result = re.search(
                 f'^{dir_name}-(.*).CSV$', os.path.basename(csv_f))
-            concept_name = result.group(1)
+            category_name = result.group(1)
 
-            if concept_name == 'amphibians' or concept_name == 'animals':
+            if category_name == 'amphibians' or category_name == 'animals':
                 continue
 
             df = pd.read_csv(
@@ -38,10 +38,11 @@ class GenerationFrequencyAndAssociativeLoader():
             df_assoc_freq = df.drop(
                 ['generation frequency', 'mean rank position'], axis=1)
 
-            generation_freq[concept_name] = GenerationFrequencyData(
-                df_gen_freq, concept_name)
-            association_freq[concept_name] = AssociativeStrengthData(
-                df_assoc_freq, concept_name)
+            category_enum = dc.Category.from_str(category_name)
+            generation_freq[category_enum] = GenerationFrequencyData(
+                df_gen_freq, category_enum)
+            association_freq[category_enum] = AssociativeStrengthData(
+                df_assoc_freq, category_enum)
 
         return generation_freq, association_freq
 

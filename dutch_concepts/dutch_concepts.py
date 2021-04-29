@@ -3,17 +3,12 @@ import os
 import zipfile
 import re
 
-from enum import Enum
-
 from glob import glob
 
 import dutch_concepts.judgements as ej
 import dutch_concepts.features as ef
 
-
-class FeatureType(Enum):
-    EXEMPLAR = 'exemplar'
-    CATEGORY = 'category'
+from .enums import FeatureType
 
 
 class DutchConcepts():
@@ -49,7 +44,6 @@ class DutchConcepts():
             self, feature_type=FeatureType.EXEMPLAR)
         self.category_features = ef.Features(
             self, feature_type=FeatureType.CATEGORY)
-        # self.features = ef.Features(self)
 
     def __download(self):
         with urllib.request.urlopen(DutchConcepts.URL) as f:
