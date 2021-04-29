@@ -107,8 +107,8 @@ class PairwiseSimilarityLoader():
             df.rename(columns=exemplar_translation, inplace=True)
 
         # Name columns and index
-        df.index.name = 'object'
-        df.columns.name = 'object'
+        df.index.name = 'exemplar'
+        df.columns.name = 'exemplar'
 
         # Retype to int
         df = df.astype(int)

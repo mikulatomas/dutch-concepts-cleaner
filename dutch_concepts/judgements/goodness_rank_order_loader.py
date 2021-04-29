@@ -57,7 +57,7 @@ class GoodnessRankOrderLoader():
 
         df.columns = range(df.shape[1])
 
-        df.index.name = 'object'
+        df.index.name = 'exemplar'
         df.columns.name = 'respondent'
 
         df = tools.sort_index_and_columns(df)

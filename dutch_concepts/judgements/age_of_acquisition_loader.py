@@ -71,7 +71,7 @@ class AgeOfAcquisitionLoader():
         df.drop(df.columns[0], axis=1, inplace=True)
         df.drop(df.columns[0], axis=1, inplace=True)
 
-        df.index.name = 'object'
+        df.index.name = 'exemplar'
 
         df = df.replace('??', np.nan)
         df = df.astype(float)

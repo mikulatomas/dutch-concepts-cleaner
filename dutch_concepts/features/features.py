@@ -115,7 +115,7 @@ class Features():
 
         df.columns = range(df.shape[1])
 
-        df.index.name = 'attribute'
+        df.index.name = 'feature'
         df.columns.name = 'respondent'
 
         df = tools.sort_index_and_columns(df)
@@ -147,8 +147,8 @@ class Features():
         df.drop(df.columns[0], axis=1, inplace=True)
 
         # Name columns and index
-        df.index.name = 'attribute'
-        df.columns.name = 'object'
+        df.index.name = 'feature'
+        df.columns.name = 'exemplar'
 
         df = df.astype(int)
 

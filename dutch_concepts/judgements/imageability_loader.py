@@ -61,7 +61,7 @@ class ImageabilityLoader():
                                 "number of 'don't know'-responses": 'missing'
                                 })
 
-        df.index.name = 'object'
+        df.index.name = 'exemplar'
 
         if self.experiment_set.dataset.language == 'en':
             df.rename(index=exemplar_translation, inplace=True)

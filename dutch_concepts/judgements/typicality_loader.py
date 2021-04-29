@@ -64,7 +64,7 @@ class TypicalityLoader():
         df.drop(df.columns[0], axis=1, inplace=True)
         df.drop(df.columns[0], axis=1, inplace=True)
 
-        df.index.name = 'object'
+        df.index.name = 'exemplar'
 
         if self.experiment_set.dataset.language == 'en':
             df.rename(index=exemplar_translation, inplace=True)
