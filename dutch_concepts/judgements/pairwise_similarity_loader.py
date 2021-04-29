@@ -33,7 +33,7 @@ class PairwiseSimilarityLoader():
             subject_number = result.group(2)
 
             df = pd.read_csv(
-                csv_f, encoding=dc.DutchConcepts.ENCODING, header=None, skipinitialspace=True, error_bad_lines=False, dtype='unicode')
+                csv_f, encoding=dc.DutchConcepts.ENCODING, header=None, skipinitialspace=True, error_bad_lines=False, dtype='unicode', warn_bad_lines=False)
 
             df = self.__clean_dataframe(df, category_name)
             name = f"{category_name.capitalize()}PairwiseSimilarities-{subject_number}"

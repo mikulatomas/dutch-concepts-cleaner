@@ -2,6 +2,7 @@ import urllib.request
 import os
 import zipfile
 import re
+import logging
 
 from glob import glob
 
@@ -30,14 +31,15 @@ class DutchConcepts():
 
         if download:
             if not os.listdir(self.dataset_dir):
-                print("Downloading dataset.")
+                logging.info("Downloading dataset.")
                 self.__download()
-                print("Downloading is done.")
-                print("Extracting dataset.")
+                logging.info("Downloading is done.")
+                logging.info("Extracting dataset.")
                 self.__extract()
-                print("Extracting done.")
+                logging.info("Extracting done.")
             else:
-                print("Dataset directory is not empty, skipping download.")
+                logging.info(
+                    "Dataset directory is not empty, skipping download.")
 
         self.judgements = ej.Judgements(self)
         self.exemplar_features = ef.Features(
@@ -58,7 +60,7 @@ class DutchConcepts():
             for file in files:
                 zip_path = os.path.join(subdir, file)
                 if '.zip' in zip_path:
-                    print(f"Extracting: {os.path.basename(zip_path)}")
+                    logging.info(f"Extracting: {os.path.basename(zip_path)}")
 
                     new_dir_name = file.replace('.zip', '')
                     if not os.path.exists(os.path.join(subdir, new_dir_name)):
