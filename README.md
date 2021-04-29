@@ -1,5 +1,5 @@
 # dutch-concepts
-Python wrapper for easier manipulation with Dutch normative data for semantic concepts dataset.
+Python wrapper for easier manipulation with Dutch normative data for semantic concepts dataset. Original data contains many error and some `csv` files are not valid.
 
 Names of the exemplars and attributes are heavily corrected. All corrections are described in `exemplar_names.py` and `features_names.py`.
 
