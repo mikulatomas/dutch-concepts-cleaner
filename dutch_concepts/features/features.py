@@ -37,6 +37,12 @@ class Features():
 
             df = self.__clean_importance_dataframe(df)
 
+            std = df.std(axis=1)
+            mean = df.mean(axis=1)
+
+            df['mean'] = mean
+            df['std'] = std
+
             category_enum = dc.Category.from_str(category_name)
             categories[category_enum] = FeatureImportanceData(
                 df, category_enum, self.feature_type)
@@ -113,12 +119,13 @@ class Features():
         if self.dataset.language == 'en':
             df.rename(index=features_translation, inplace=True)
 
-        df.columns = range(df.shape[1])
+        df.columns = [f"respondent {i}" for i in range(df.shape[1])]
 
         df.index.name = 'feature'
-        df.columns.name = 'respondent'
+        df.columns.name = None
 
         df = tools.sort_index_and_columns(df)
+        df = df.astype(int)
 
         return df
 

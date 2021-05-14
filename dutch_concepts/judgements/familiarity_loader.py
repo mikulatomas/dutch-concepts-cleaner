@@ -32,6 +32,9 @@ class FamiliarityLoader():
 
             df = self.__clean_dataframe(df)
 
+            # rearrange columns
+            df = df[[c for c in df if c not in ['mean', 'std', 'nonmissing']] + ['mean', 'std', 'nonmissing']]
+
             category_enum = dc.Category.from_str(category_name)
             ratings[category_enum] = FamiliarityData(
                 df, reliability, category_enum)

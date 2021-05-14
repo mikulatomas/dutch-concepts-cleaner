@@ -3,6 +3,7 @@ import os
 
 from glob import glob
 import pandas as pd
+import numpy as np
 
 import dutch_concepts as dc
 import dutch_concepts.tools as tools
@@ -31,6 +32,12 @@ class TypicalityLoader():
             reliability = self.__extract_reliability(df)
 
             df = self.__clean_dataframe(df)
+
+            # rearrange columns
+            df = df[[c for c in df if c not in ['mean', 'std', 'nonmissing']] + ['mean', 'std', 'nonmissing']]
+
+            # replace -1 by NaN
+            df = df.replace(-1, np.NaN)
 
             category_enum = dc.Category.from_str(category_name)
             ratings[category_enum] = TypicalityData(

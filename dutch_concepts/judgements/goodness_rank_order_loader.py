@@ -3,6 +3,7 @@ import os
 
 from glob import glob
 import pandas as pd
+import numpy as np
 
 import dutch_concepts as dc
 import dutch_concepts.tools as tools
@@ -31,6 +32,9 @@ class GoodnessRankOrderLoader():
 
             df = self.__clean_dataframe(df)
 
+            # replace -1 by NaN
+            df = df.replace(-1, np.NaN)
+
             category_enum = dc.Category.from_str(category_name)
             ratings[category_enum] = GoodnessRankOrderData(
                 df, category_enum)
@@ -55,10 +59,10 @@ class GoodnessRankOrderLoader():
         if self.experiment_set.dataset.language == 'en':
             df.rename(index=exemplars_translation, inplace=True)
 
-        df.columns = range(df.shape[1])
+        df.columns = [f"respondent {i}" for i in range(df.shape[1])]
 
         df.index.name = 'exemplar'
-        df.columns.name = 'respondent'
+        df.columns.name = None
 
         df = tools.sort_index_and_columns(df)
 

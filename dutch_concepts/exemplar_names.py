@@ -20,7 +20,7 @@ EXEMPLAR_TRANSLATION_FIXES = {
     "brommer": "scooter (brommer)",
     # duplicity: "camion", "vrachtwagen" are both "truck",
     "camion": "truck (camion)",
-    "vrachtwagen": "truck (camion)",
+    "vrachtwagen": "truck (vrachtwagen)",
     # duplicity: "koevoet", "breekijzer" are both "crowbar"
     "koevoet": "crowbar (koevoet)",
     "breekijzer": "crowbar (breekijzer)",

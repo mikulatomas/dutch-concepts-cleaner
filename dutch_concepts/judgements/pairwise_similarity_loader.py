@@ -3,6 +3,7 @@ import os
 
 from glob import glob
 import pandas as pd
+import numpy as np
 
 import dutch_concepts as dc
 import dutch_concepts.tools as tools
@@ -36,6 +37,10 @@ class PairwiseSimilarityLoader():
                 csv_f, encoding=dc.DutchConcepts.ENCODING, header=None, skipinitialspace=True, error_bad_lines=False, dtype='unicode', warn_bad_lines=False)
 
             df = self.__clean_dataframe(df, category_name)
+
+            # replace -1 by NaN
+            df = df.replace(-1, np.NaN)
+
             name = f"{category_name.capitalize()}PairwiseSimilarities-{subject_number}"
 
             if similarities.get(category_name):
