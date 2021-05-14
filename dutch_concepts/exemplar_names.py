@@ -13,13 +13,17 @@ EXEMPLAR_NAMES_FIXES = {
 
 EXEMPLAR_TRANSLATION_FIXES = {
     # duplicity: "brommer", "moto" both translated as "motorbike"
-    "brommer": "scooter",
+    "brommer": "motorbike (brommer)",
+    "moto": "motorbike (moto)",
     # duplicity: "brommer", "bromfiets" are both "scooter" because of the rule above
-    "bromfiets": "moped",
+    "bromfiets": "scooter (bromfiets)",
+    "brommer": "scooter (brommer)",
     # duplicity: "camion", "vrachtwagen" are both "truck",
-    "camion": "camion",
+    "camion": "truck (camion)",
+    "vrachtwagen": "truck (camion)",
     # duplicity: "koevoet", "breekijzer" are both "crowbar"
-    "koevoet": "jimmy bar",
+    "koevoet": "crowbar (koevoet)",
+    "breekijzer": "crowbar (breekijzer)",
     # translation error: "fluit" is sometimes translated as "flute" insteda of "recorder"
     "fluit": "recorder",
     # typo: "cabary" vs "canary"
@@ -30,13 +34,14 @@ EXEMPLAR_TRANSLATION_FIXES = {
     "meikever": "cockchafer",
     # unify translation: "oliespuit" is translated to "oilcan" or "oil can"
     "oliespuit": "oil can",
-    # lowercase
+    # lowercase (originaly Zeppelin)
     "zeppelin": "zeppelin",
     # unify translation: "engelsesleutel" is "adjustable spanner" or "screw wrench"
-    "engelse sleutel": "adjustable spanner",
+    "engelse sleutel": "adjustable spanner (engelse sleutel)",
+    "engelse sleutel": "screw wrench (engelse sleutel)",
     # translation error: "houtklem" is tranlated in one file as "spanner" instead of "clamp"s
     "houtklem": "clamp",
-    # duplicity: "plamuurmes" is "filling-knife" and "filling knife", "putty knife" would be in general better translation
+    # duplicity: "plamuurmes" is "filling-knife" and "filling knife"
     "plamuurmes": "filling knife",
     # duplicity: "camionette" is translated both as "delivery van" and "van"
     "camionette": "van",
