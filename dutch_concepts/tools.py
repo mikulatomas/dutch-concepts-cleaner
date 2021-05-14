@@ -21,6 +21,9 @@ def sort_index_and_columns(df):
     df = df.sort_index(axis=0)
     df = df.sort_index(axis=1)
 
+    if set(['mean', 'std', 'nonmissing']).issubset(set(df.columns)):
+        df = df[[c for c in df if c not in ['mean', 'std', 'nonmissing']] + ['mean', 'std', 'nonmissing']]
+
     return df
 
 

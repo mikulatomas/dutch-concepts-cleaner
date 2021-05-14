@@ -32,9 +32,6 @@ class GoodnessRankOrderLoader():
 
             df = self.__clean_dataframe(df)
 
-            # replace -1 by NaN
-            df = df.replace(-1, np.NaN)
-
             category_enum = dc.Category.from_str(category_name)
             ratings[category_enum] = GoodnessRankOrderData(
                 df, category_enum)
@@ -63,6 +60,11 @@ class GoodnessRankOrderLoader():
 
         df.index.name = 'exemplar'
         df.columns.name = None
+
+        df = df.astype(float)
+
+        # replace -1 by NaN
+        df = df.replace(-1, np.NaN)
 
         df = tools.sort_index_and_columns(df)
 

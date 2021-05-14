@@ -66,7 +66,8 @@ class GenerationFrequencyAndAssociativeLoader():
 
         df.index.name = 'exemplar'
 
-        df = df.astype(float)
+        column_types = {'generation frequency': int, 'mean rank position': float}
+        df = df.astype(column_types)
 
         df = tools.sort_index_and_columns(df)
 

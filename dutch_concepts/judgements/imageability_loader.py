@@ -66,7 +66,8 @@ class ImageabilityLoader():
         if self.experiment_set.dataset.language == 'en':
             df.rename(index=exemplar_translation, inplace=True)
 
-        df = df.astype(float)
+        column_types = {'missing': int, 'nonmissing': int, 'mean': float, 'std': float}
+        df = df.astype(column_types)
 
         df = tools.sort_index_and_columns(df)
 

@@ -33,12 +33,6 @@ class GoodnessLoader():
 
             df = self.__clean_dataframe(df)
 
-            # rearrange columns
-            df = df[[c for c in df if c not in ['mean', 'std', 'nonmissing']] + ['mean', 'std', 'nonmissing']]
-
-            # replace -1 by NaN
-            df = df.replace(-1, np.NaN)
-
             category_enum = dc.Category.from_str(category_name)
             ratings[category_enum] = GoodnessData(
                 df, reliability, category_enum)
@@ -85,8 +79,11 @@ class GoodnessLoader():
 
         df.columns = new_columns
 
-        df = df.astype(float)
+        # replace -1 by NaN
+        df = df.replace(-1, np.NaN)
 
+        df = df.astype(float)
+    
         df = tools.sort_index_and_columns(df)
 
         return df

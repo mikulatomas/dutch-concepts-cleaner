@@ -38,9 +38,6 @@ class PairwiseSimilarityLoader():
 
             df = self.__clean_dataframe(df, category_name)
 
-            # replace -1 by NaN
-            df = df.replace(-1, np.NaN)
-
             name = f"{category_name.capitalize()}PairwiseSimilarities-{subject_number}"
 
             if similarities.get(category_name):
@@ -56,16 +53,11 @@ class PairwiseSimilarityLoader():
                 self.__calculate_mean(datasets), datasets, category_enum)
 
         return similarities_filtered
-
+    
     def __calculate_mean(self, datasets):
-        datasets = list(datasets.values())
-        mean = datasets[0]
-        for df in datasets[1:]:
-            mean += df
-
-        mean /= len(datasets)
-
-        return mean
+        df_concat = pd.concat(datasets)
+        return df_concat.groupby(level=1).mean()
+        # return df_concat
 
     def __clean_dataframe(self, df, category_name):
         df = tools.drop_all_nan(df)
@@ -115,8 +107,28 @@ class PairwiseSimilarityLoader():
         df.index.name = 'exemplar'
         df.columns.name = 'exemplar'
 
-        # Retype to int
-        df = df.astype(int)
+        # Retype to float
+        df = df.astype(float)
+
+        # ensure -1 value in whole column or row in case that one is present
+        unkwnown_exemplars = []
+        for c in df.columns:
+            if -1 in df[c].values:
+                unkwnown_exemplars.append(c)
+                df[c][df[c] > 0] = -1
+        
+        for e in unkwnown_exemplars:
+            df.loc[e][df.loc[e] > 0] = -1
+
+        # replace -1 by NaN
+        df = df.replace(-1, np.NaN)
+
+        symetric = np.triu(df.values) + np.tril(df.values.T, 1)
+
+        # add 20 value to diagonals
+        np.fill_diagonal(symetric, 20.0)
+
+        df = pd.DataFrame(symetric, columns=df.columns, index=df.index)
 
         df = tools.sort_index_and_columns(df)
 

@@ -33,12 +33,6 @@ class TypicalityLoader():
 
             df = self.__clean_dataframe(df)
 
-            # rearrange columns
-            df = df[[c for c in df if c not in ['mean', 'std', 'nonmissing']] + ['mean', 'std', 'nonmissing']]
-
-            # replace -1 by NaN
-            df = df.replace(-1, np.NaN)
-
             category_enum = dc.Category.from_str(category_name)
             ratings[category_enum] = TypicalityData(
                 df, reliability, category_enum)
@@ -85,7 +79,13 @@ class TypicalityLoader():
 
         df.columns = new_columns
 
-        df = df.astype(float)
+        float_column_types = dict.fromkeys([c for c in df if c not in ['nonmissing']], float)
+        int_column_types = dict.fromkeys(['nonmissing'], int)
+        column_types = {**int_column_types, **float_column_types}
+        df = df.astype(column_types)
+
+        # replace -1 by NaN
+        df = df.replace(-1, np.NaN)
 
         df = tools.sort_index_and_columns(df)
 

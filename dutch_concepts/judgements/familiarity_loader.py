@@ -32,9 +32,6 @@ class FamiliarityLoader():
 
             df = self.__clean_dataframe(df)
 
-            # rearrange columns
-            df = df[[c for c in df if c not in ['mean', 'std', 'nonmissing']] + ['mean', 'std', 'nonmissing']]
-
             category_enum = dc.Category.from_str(category_name)
             ratings[category_enum] = FamiliarityData(
                 df, reliability, category_enum)
@@ -81,7 +78,10 @@ class FamiliarityLoader():
 
         df.columns = new_columns
 
-        df = df.astype(float)
+        int_column_types = dict.fromkeys([c for c in df if c not in ['mean', 'std']], int)
+        float_column_types = dict.fromkeys(['mean', 'std'], float)
+        column_types = {**int_column_types, **float_column_types}
+        df = df.astype(column_types)
 
         df = tools.sort_index_and_columns(df)
 
