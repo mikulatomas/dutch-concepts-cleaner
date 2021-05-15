@@ -38,7 +38,7 @@ class PairwiseSimilarityLoader():
 
             df = self.__clean_dataframe(df, category_name)
 
-            name = f"{category_name.capitalize()}PairwiseSimilarities-{subject_number}"
+            name = f"respondent {subject_number}"
 
             if similarities.get(category_name):
                 similarities.get(category_name)[name] = df

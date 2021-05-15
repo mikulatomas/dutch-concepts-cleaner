@@ -90,4 +90,6 @@ FEATURE_TRANSLATION_FIXES = {
     # duplicity of "is practised on a field"
     "wordt beoefend op een veld": "is practised on a field",
     "wordt gespeeld op een veld": "is played on a field",
+    # consistency: originally "has a fur (in dutch: vacht)"
+    "heeft een vacht": "has a fur (vacht)",
 }
