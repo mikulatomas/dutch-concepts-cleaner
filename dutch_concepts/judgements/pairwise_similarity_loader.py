@@ -10,31 +10,40 @@ import dutch_concepts.tools as tools
 from dutch_concepts.experiment_data import ExperimentData
 
 
-class PairwiseSimilarityLoader():
+class PairwiseSimilarityLoader:
     def __init__(self, experiment_set):
         self.experiment_set = experiment_set
 
     def load(self):
-        dir_name = 'pairwise similarities'
+        dir_name = "pairwise similarities"
 
         similarities = {}
 
         load_dir = os.path.join(
-            self.experiment_set.dataset.dataset_dir, dc.DutchConcepts.CSV_DIR, dir_name)
+            self.experiment_set.dataset.dataset_dir, dc.DutchConcepts.CSV_DIR, dir_name
+        )
 
-        for csv_f in glob(os.path.join(load_dir, '*', '*.CSV')):
+        for csv_f in glob(os.path.join(load_dir, "*", "*.CSV")):
             result = re.search(
-                '^pairwiseSimilarities(.*)-(.*).CSV$', os.path.basename(csv_f))
+                "^pairwiseSimilarities(.*)-(.*).CSV$", os.path.basename(csv_f)
+            )
 
             category_name = tools.format_category_name(result.group(1))
 
-            if category_name == 'amphibians':
+            if category_name == "amphibians":
                 continue
 
             subject_number = result.group(2)
 
             df = pd.read_csv(
-                csv_f, encoding=dc.DutchConcepts.ENCODING, header=None, skipinitialspace=True, error_bad_lines=False, dtype='unicode', warn_bad_lines=False)
+                csv_f,
+                encoding=dc.DutchConcepts.ENCODING,
+                header=None,
+                skipinitialspace=True,
+                error_bad_lines=False,
+                dtype="unicode",
+                warn_bad_lines=False,
+            )
 
             df = self.__clean_dataframe(df, category_name)
 
@@ -50,23 +59,30 @@ class PairwiseSimilarityLoader():
         for category_name, datasets in similarities.items():
             category_enum = dc.Category.from_str(category_name)
             similarities_filtered[category_enum] = SimilarityJudgementsData(
-                self.__calculate_mean(datasets), datasets, category_enum)
+                self.__calculate_mean(datasets), datasets, category_enum
+            )
 
         return similarities_filtered
-    
+
     def __calculate_mean(self, datasets):
         df_concat = pd.concat(datasets)
-        return df_concat.groupby(level=1).mean()
+        return df_concat.groupby(level=1).mean() / 20
         # return df_concat
 
     def __clean_dataframe(self, df, category_name):
         df = tools.drop_all_nan(df)
 
         # hack because csv are messy
-        if category_name in ['birds', 'clothing', 'fish', 'musical instruments', 'vehicles']:
+        if category_name in [
+            "birds",
+            "clothing",
+            "fish",
+            "musical instruments",
+            "vehicles",
+        ]:
             index_col = 1
             column_row = 1
-        elif category_name in ['fruit', 'professions', 'sports', 'vegetables']:
+        elif category_name in ["fruit", "professions", "sports", "vegetables"]:
             index_col = 0
             column_row = 0
         else:
@@ -75,15 +91,18 @@ class PairwiseSimilarityLoader():
 
         # Set the index
         df.index = df.iloc[:, index_col]
-        df.index = df.index.fillna('tmp')
+        df.index = df.index.fillna("tmp")
         df.index = map(str.strip, df.index)
 
         # Exemplar names fix
         df.rename(index=dc.EXEMPLAR_NAMES_FIXES, inplace=True)
 
-        if self.experiment_set.dataset.language == 'en':
+        if self.experiment_set.dataset.language == "en":
             exemplar_translation = tools.get_fixed_translation(
-                df.index[2:], df.iloc[0 if column_row == 1 else 1][2:], dc.EXEMPLAR_TRANSLATION_FIXES)
+                df.index[2:],
+                df.iloc[0 if column_row == 1 else 1][2:],
+                dc.EXEMPLAR_TRANSLATION_FIXES,
+            )
 
         df.drop(df.columns[0], axis=1, inplace=True)
         df.drop(df.columns[0], axis=1, inplace=True)
@@ -98,14 +117,14 @@ class PairwiseSimilarityLoader():
         df.drop(df.index[0], axis=0, inplace=True)
         df.drop(df.index[0], axis=0, inplace=True)
 
-        if self.experiment_set.dataset.language == 'en':
+        if self.experiment_set.dataset.language == "en":
             # Translation
             df.rename(index=exemplar_translation, inplace=True)
             df.rename(columns=exemplar_translation, inplace=True)
 
         # Name columns and index
-        df.index.name = 'exemplar'
-        df.columns.name = 'exemplar'
+        df.index.name = "exemplar"
+        df.columns.name = "exemplar"
 
         # Retype to float
         df = df.astype(float)
@@ -116,7 +135,7 @@ class PairwiseSimilarityLoader():
             if -1 in df[c].values:
                 unkwnown_exemplars.append(c)
                 df[c][df[c] > 0] = -1
-        
+
         for e in unkwnown_exemplars:
             df.loc[e][df.loc[e] > 0] = -1
 

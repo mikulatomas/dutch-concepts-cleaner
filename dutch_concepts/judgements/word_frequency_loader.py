@@ -10,7 +10,7 @@ import dutch_concepts.tools as tools
 from dutch_concepts.experiment_data import ExperimentData
 
 
-class AgeOfAcquisitionLoader:
+class WordFrequncyLoader:
     def __init__(self, experiment_set):
         self.experiment_set = experiment_set
 
@@ -35,26 +35,12 @@ class AgeOfAcquisitionLoader:
                 usecols=range(6),
             )
 
-            reliability = self.__extract_reliability(df)
-
             df = self.__clean_dataframe(df)
 
             category_enum = dc.Category.from_str(category_name)
-            ratings[category_enum] = AgeOfAcquisitionData(
-                df, reliability, category_enum
-            )
+            ratings[category_enum] = WordFrequncyData(df, category_enum)
 
         return ratings
-
-    def __extract_reliability(self, df):
-        reliability = -1
-        for col in df.columns:
-            match = re.search("^(estimated reliability = (.*))$", col)
-
-            if match:
-                reliability = float(match.group(1).replace(",", "."))
-
-        return reliability
 
     def __clean_dataframe(self, df):
         df = tools.drop_all_nan(df)
@@ -85,12 +71,11 @@ class AgeOfAcquisitionLoader:
 
         df = tools.sort_index_and_columns(df)
 
-        df.drop("log(lemmaFreq)", axis=1, inplace=True)
+        df.drop(["% known", "age of acquisition"], axis=1, inplace=True)
 
         return df
 
 
-class AgeOfAcquisitionData(ExperimentData):
-    def __init__(self, data, reliability, name):
+class WordFrequncyData(ExperimentData):
+    def __init__(self, data, name):
         super().__init__(data, name)
-        self.reliability = reliability
