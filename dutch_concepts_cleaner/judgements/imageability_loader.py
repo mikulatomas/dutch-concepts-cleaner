@@ -4,9 +4,9 @@ import os
 from glob import glob
 import pandas as pd
 
-import dutch_concepts as dc
-import dutch_concepts.tools as tools
-from dutch_concepts.experiment_data import ExperimentData
+import dutch_concepts_cleaner as dc
+import dutch_concepts_cleaner.tools as tools
+from dutch_concepts_cleaner.experiment_data import ExperimentData
 
 
 class ImageabilityLoader():
@@ -28,10 +28,10 @@ class ImageabilityLoader():
 
             try:
                 df = pd.read_csv(
-                    csv_f, encoding=dc.DutchConcepts.ENCODING, skipinitialspace=True, dtype='unicode')
+                    csv_f, encoding=dc.DutchConceptsCleaner.ENCODING, skipinitialspace=True, dtype='unicode')
             except:
                 df = pd.read_csv(
-                    csv_f, encoding=dc.DutchConcepts.ENCODING, skipinitialspace=True, dtype='unicode', usecols=range(42))
+                    csv_f, encoding=dc.DutchConceptsCleaner.ENCODING, skipinitialspace=True, dtype='unicode', usecols=range(42))
 
             df = self.__clean_dataframe(df)
 

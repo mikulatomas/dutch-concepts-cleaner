@@ -133,7 +133,7 @@ dataset
 download
 
 playground.ipynb
-tests/dutch_concepts
+tests/dutch_concepts_cleaner
 dev/
 
 .DS_Store

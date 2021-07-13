@@ -3,18 +3,19 @@ import os
 
 from glob import glob
 import pandas as pd
+import numpy as np
 
-import dutch_concepts as dc
-import dutch_concepts.tools as tools
-from dutch_concepts.experiment_data import ExperimentData
+import dutch_concepts_cleaner as dc
+import dutch_concepts_cleaner.tools as tools
+from dutch_concepts_cleaner.experiment_data import ExperimentData
 
 
-class FamiliarityLoader():
+class GoodnessLoader():
     def __init__(self, experiment_set):
         self.experiment_set = experiment_set
 
     def load(self):
-        dir_name = 'exemplarFamiliarityRatings'
+        dir_name = 'exemplarGoodnessRatings'
 
         ratings = {}
 
@@ -27,13 +28,13 @@ class FamiliarityLoader():
                 continue
 
             df = pd.read_csv(
-                csv_f, encoding=dc.DutchConcepts.ENCODING, skipinitialspace=True, dtype='unicode')
+                csv_f, encoding=dc.DutchConceptsCleaner.ENCODING, skipinitialspace=True, dtype='unicode')
             reliability = self.__extract_reliability(df)
 
             df = self.__clean_dataframe(df)
 
             category_enum = dc.Category.from_str(category_name)
-            ratings[category_enum] = FamiliarityData(
+            ratings[category_enum] = GoodnessData(
                 df, reliability, category_enum)
 
         return ratings
@@ -78,17 +79,17 @@ class FamiliarityLoader():
 
         df.columns = new_columns
 
-        int_column_types = dict.fromkeys([c for c in df if c not in ['mean', 'std']], int)
-        float_column_types = dict.fromkeys(['mean', 'std'], float)
-        column_types = {**int_column_types, **float_column_types}
-        df = df.astype(column_types)
+        # replace -1 by NaN
+        df = df.replace(-1, np.NaN)
 
+        df = df.astype(float)
+    
         df = tools.sort_index_and_columns(df)
 
         return df
 
 
-class FamiliarityData(ExperimentData):
+class GoodnessData(ExperimentData):
     def __init__(self, data, reliability, name):
         super().__init__(data, name)
         self.reliability = reliability

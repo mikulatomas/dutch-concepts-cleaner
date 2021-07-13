@@ -5,9 +5,9 @@ from glob import glob
 import pandas as pd
 import numpy as np
 
-import dutch_concepts as dc
-import dutch_concepts.tools as tools
-from dutch_concepts.experiment_data import ExperimentData
+import dutch_concepts_cleaner as dc
+import dutch_concepts_cleaner.tools as tools
+from dutch_concepts_cleaner.experiment_data import ExperimentData
 
 
 class GenerationFrequencyAndAssociativeLoader():
@@ -29,7 +29,7 @@ class GenerationFrequencyAndAssociativeLoader():
                 continue
 
             df = pd.read_csv(
-                csv_f, encoding=dc.DutchConcepts.ENCODING, dtype='unicode', usecols=range(6))
+                csv_f, encoding=dc.DutchConceptsCleaner.ENCODING, dtype='unicode', usecols=range(6))
 
             df = self.__clean_dataframe(df)
 

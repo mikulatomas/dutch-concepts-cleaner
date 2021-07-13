@@ -1,5 +1,5 @@
 import pytest
-from dutch_concepts import DutchConcepts
+from dutch_concepts_cleaner import DutchConceptsCleaner
 
 
 def test_generation_frequency_label_content(dc_languages):

@@ -2,8 +2,9 @@
 
 import os, errno
 import shutil
+import zipfile
 
-from dutch_concepts import DutchConcepts, Domain
+from dutch_concepts_cleaner import DutchConceptsCleaner, Domain
 
 
 def safe_string(str):
@@ -78,7 +79,7 @@ def export_feature_categories(data, feature_folder, folder, name, suffix="sum"):
 
 
 def export_feature_domains(data, feature_folder, folder, name, suffix="sum"):
-    specific_domain_folder = os.path.join(feature_folder, folder)
+    specific_domain_folder = os.path.join(feature_folder, DOMAIN_FOLDER, folder)
     os.makedirs(specific_domain_folder)
 
     filename = f"{folder}_{name}"
@@ -160,24 +161,26 @@ EXEMPLAR_CATEGORY_FEATURES_FOLDER = "categories"
 
 CATEGORY_CATEGORY_FEATURES_FOLDER = "categories"
 
-EXEMPLAR_ANIMAL_DOMAIN_FEATURES_FOLDER = "animal_domain"
+DOMAIN_FOLDER = "domains"
 
-EXEMPLAR_ARTIFACT_DOMAIN_FEATURES_FOLDER = "artifact_domain"
+EXEMPLAR_ANIMAL_DOMAIN_FEATURES_FOLDER = "animal"
 
-CATEGORY_ANIMAL_DOMAIN_FEATURES_FOLDER = "animal_domain"
+EXEMPLAR_ARTIFACT_DOMAIN_FEATURES_FOLDER = "artifact"
 
-CATEGORY_ARTIFACT_DOMAIN_FEATURES_FOLDER = "artifact_domain"
+CATEGORY_ANIMAL_DOMAIN_FEATURES_FOLDER = "animal"
 
-FEATURE_FREQ_FOLDER = "feature_generation_frequencies"
+CATEGORY_ARTIFACT_DOMAIN_FEATURES_FOLDER = "artifact"
+
+FEATURE_FREQ_FOLDER = "feature_generation_frequency"
 
 
 # remove previous export
-shutil.rmtree(os.path.join(EXPORT_ROOT, DATA_ROOT), ignore_errors=True)
+shutil.rmtree(os.path.join(EXPORT_ROOT), ignore_errors=True)
 
 LANGUAGUES = ["en", "nl"]
 
 for lang in LANGUAGUES:
-    dataset = DutchConcepts(root="tests/", download=True, language=lang)
+    dataset = DutchConceptsCleaner(root="tests/", download=True, language=lang)
 
     lang_root = os.path.join(EXPORT_ROOT, DATA_ROOT, lang)
 
@@ -288,16 +291,19 @@ for lang in LANGUAGUES:
         "category",
     )
 
+    feature_freq_domains = os.path.join(category_features_freq, DOMAIN_FOLDER)
+    os.makedirs(feature_freq_domains)
+
     export_feature_freq_domains(
         dataset.category_features.domain[Domain.ANIMAL],
-        category_features_freq,
+        feature_freq_domains,
         CATEGORY_ANIMAL_DOMAIN_FEATURES_FOLDER,
         "category",
     )
 
     export_feature_freq_domains(
         dataset.category_features.domain[Domain.ARTIFACT],
-        category_features_freq,
+        feature_freq_domains,
         CATEGORY_ARTIFACT_DOMAIN_FEATURES_FOLDER,
         "category",
     )
@@ -345,19 +351,32 @@ for lang in LANGUAGUES:
         "exemplar",
     )
 
+    feature_freq_domains = os.path.join(exemplar_features_freq, DOMAIN_FOLDER)
+    os.makedirs(feature_freq_domains)
+
     export_feature_freq_domains(
         dataset.exemplar_features.domain[Domain.ANIMAL],
-        exemplar_features_freq,
+        feature_freq_domains,
         EXEMPLAR_ANIMAL_DOMAIN_FEATURES_FOLDER,
         "exemplar",
     )
 
     export_feature_freq_domains(
         dataset.exemplar_features.domain[Domain.ARTIFACT],
-        exemplar_features_freq,
+        feature_freq_domains,
         EXEMPLAR_ARTIFACT_DOMAIN_FEATURES_FOLDER,
         "exemplar",
     )
 
 
-# dataset = DutchConcepts(root="", download=True, language="en")
+def zipdir(path, ziph):
+    # ziph is zipfile handle
+    for root, dirs, files in os.walk(path):
+        for file in files:
+            ziph.write(os.path.join(root, file), 
+                       os.path.relpath(os.path.join(root, file), 
+                                       os.path.join(path, '..')))
+
+zipf = zipfile.ZipFile(os.path.join(EXPORT_ROOT, 'dutch_data.zip'), 'w', zipfile.ZIP_DEFLATED)
+zipdir(os.path.join(EXPORT_ROOT, DATA_ROOT), zipf)
+zipf.close()

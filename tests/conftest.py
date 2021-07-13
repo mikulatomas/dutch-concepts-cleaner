@@ -1,8 +1,8 @@
 import pytest
-from dutch_concepts import DutchConcepts
+from dutch_concepts_cleaner import DutchConceptsCleaner
 
 
 @pytest.fixture(scope='session', autouse=True)
 def dc_languages(request):
     return [
-        DutchConcepts(root='tests', download=True, language='en'), DutchConcepts(root='tests', download=True, language='nl')]
+        DutchConceptsCleaner(root='tests', download=True, language='en'), DutchConceptsCleaner(root='tests', download=True, language='nl')]

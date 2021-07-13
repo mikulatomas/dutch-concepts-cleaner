@@ -5,9 +5,9 @@ from glob import glob
 import pandas as pd
 import numpy as np
 
-import dutch_concepts as dc
-import dutch_concepts.tools as tools
-from dutch_concepts.experiment_data import ExperimentData
+import dutch_concepts_cleaner as dc
+import dutch_concepts_cleaner.tools as tools
+from dutch_concepts_cleaner.experiment_data import ExperimentData
 
 
 class PairwiseSimilarityLoader:
@@ -20,7 +20,7 @@ class PairwiseSimilarityLoader:
         similarities = {}
 
         load_dir = os.path.join(
-            self.experiment_set.dataset.dataset_dir, dc.DutchConcepts.CSV_DIR, dir_name
+            self.experiment_set.dataset.dataset_dir, dc.DutchConceptsCleaner.CSV_DIR, dir_name
         )
 
         for csv_f in glob(os.path.join(load_dir, "*", "*.CSV")):
@@ -37,7 +37,7 @@ class PairwiseSimilarityLoader:
 
             df = pd.read_csv(
                 csv_f,
-                encoding=dc.DutchConcepts.ENCODING,
+                encoding=dc.DutchConceptsCleaner.ENCODING,
                 header=None,
                 skipinitialspace=True,
                 error_bad_lines=False,
@@ -129,14 +129,21 @@ class PairwiseSimilarityLoader:
         # Retype to float
         df = df.astype(float)
 
-        # ensure -1 value in whole column or row in case that one is present
-        unkwnown_exemplars = []
+        # ensure -1 value in whole column or row in case that exemplar is unknown
+        unkwnown_exemplars_columns = []
         for c in df.columns:
-            if -1 in df[c].values:
-                unkwnown_exemplars.append(c)
-                df[c][df[c] > 0] = -1
+            if (df[c].values >= -1).all() and (df[c].values <= 0).all():
+                unkwnown_exemplars_columns.append(c)
 
-        for e in unkwnown_exemplars:
+        unkwnown_exemplars_rows = []
+        for c in df.index:
+            if (df[c].values >= -1).all() and (df[c].values <= 0).all():
+                unkwnown_exemplars_rows.append(c)
+
+        for e in unkwnown_exemplars_columns:
+            df.loc[e][df.loc[e] > 0] = -1
+        
+        for e in unkwnown_exemplars_rows:
             df.loc[e][df.loc[e] > 0] = -1
 
         # replace -1 by NaN

@@ -1,6 +1,6 @@
 import pytest
 
-from dutch_concepts import DutchConcepts
+from dutch_concepts_cleaner import DutchConceptsCleaner
 
 
 def test_duplicity_index(dc_languages):

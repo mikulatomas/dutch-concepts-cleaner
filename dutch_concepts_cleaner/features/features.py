@@ -5,9 +5,11 @@ import numpy as np
 import pandas as pd
 from glob import glob
 
-import dutch_concepts as dc
-import dutch_concepts.tools as tools
-from dutch_concepts.experiment_data import ExperimentData
+import dutch_concepts_cleaner as dc
+import dutch_concepts_cleaner.tools as tools
+from dutch_concepts_cleaner.experiment_data import ExperimentData
+
+LABEL_HOTFIX = ["feature/ exemplar ENGLISH", "", "a synonym is 'schuiftrompet'", "accompagnies (other) music", "is played by a drummer", "is played by an organist", "is played with a plectrum", "is played during concerts", "is played while standing", "has been existing for a long time", "exists in different measurements", "exists in different sizes", "exists in different colors", "exists in different kinds", "exists in pairs", "consists of different parts", "shines", "creates a good atmosphere", "is used to beat on", "also used as a toy", "een example is the piccolo", "has a skin", "you play chords on it", "you play musical notes on it", "you play rhythms on it", "exists in different tube lengths", "associated with kilt", "used in folk dance", "used in folk music", "used in the Middle Ages", "used in the Mass", "used to announce something", "produces only one sound", "gives a nasty sound", "indicates the rhythm", "made of wood", "made of metal", "checkered", "hangs from a rope", "you need much breath for this", "requires much practise", "has Belgian inventor", "has little bells all round", "has a complex shape", "has a deep sound", "has a dull sound", "has a neck", "has a grip", "has a sound bell", "has a sound box ", "has a keyboard", "has a lid", "has a bag of air", "has a mouthpiece", "makes a nice sound/noise", "requires a belt for wearing it", "has a straw", "has a shrill sound", "has a warm sound", "has a soft sound", "has holes", "has pedals", "has (trousers)legs", "has snares", "has tuning forks", "has buttons", "has drums", "has two keyboards", "has many buttons", "has wings", "has black and white keys", "has white keys", "has black keys", "has a clear sound", "does not weigh much", "can be played upon", "is brown", "is cylindrical", "is triangular", "is expensive", "is a wind instrument", "is part of a drumset", "is part of percussion", "is related to the violin", "is a wind instrument", "is a woodwinds", "is an instrument of the Greek god Pan", "classical instrument", "is a brass player", "is a difficult instrument", "is a musical instrument", "is an old instrument", "is a popular instrument", "is a percussion instrument", "is a string instrument", "is a sort of piano", "is a sort of violin", "is a string instrument with a bow", "is always part of a band", "predecessor of a piano", "is easy to play", "is related to a guitar", "is made of bamboo", "is slippery", "is cheap", "is golden", "is big", "is handy to transport", "is hard", "is hollow", "is small", "is long", "is elongated", "is unwieldy", "is loud", "is melodious", "is Mexican", "is beautiful", "is relaxing", "is rectangular", "is round", "is gracefull", "for sale in a music shop", "is made of iron", "is made of copper", "is for sturdy guys", "is fairly unknown", "is black and white", "is rare", "is silver-coloured", "is southern", "is heavy", "is black", "you can play songs on it", "you can play different notes whit it", "you can learn it in a school of music", "you have to be able to read notes for it", "you have to blow on it", "you have to have good lungs", "you have to read music-scores", "Jo with the banjo", "can be acoustic", "can have cymbals", "can be electronic", "you can pull it (open) and push it", "can be played on", "can be plunked upon", "can sound out of tune", "can be connected to an amplifier", "can mimic different instruments", "can produce different tones at once", "classical music", "sounds fiercely", "sounds low", "sounds nasally", "originates from Scotland", "featured in a brass band", "occurs in a choir", "featured in an orchestra", "occurs in indian culture", "occurs in many (music)bands", "ressembles a piano", "featured in a Luc Steeno song", "makes a bass noise", "makes a special noise", "makes a piercing noise", "produces sound", "produces high pitched sound", "produces noise", "produces music", "makes peacefull music", "produces different sounds", "has to be tuned", "you have to place it to your lips", "you have to hold it diagonally", "one has to learn how to play", "needs to be supported", "hangs around the neck/shoulders", "smells neutral", "has a spike at its base", "played by Toots Tielemans", "its vibrations produce sounds", "invented by Adolphe Sax", "played by Mozart", "works with a shove system", "works with air", "is played while sitting", "played by a musician", "played in a brass band", "played with the mouth", "played with a bow", "played with a stick (sticks)", "played with the fingers", "played by a single person", "used for rock music", "used in folk music", "used in traditional music", "used at parties", "used in jazz music", "used in pop music", "is used in combination with other instruments", "played by gipsies", "is stored in a box", "used in many different musical styles", "played by men", "played with the hands", "played with two hands", "used by referees", "used solo", "sometimes used to accompany voice", "often played in a church", "often used at camp sites", "often used in blues music", "often used by street musicians", "primarily played by girls", "especially played by older people", "played seldomly", "sometimes played on the street", "both large and small", "both hands and feet are used", "", "", "", "", "", ""]
 
 
 class Features:
@@ -17,7 +19,7 @@ class Features:
 
         self._features_dir = os.path.join(
             self.dataset.dataset_dir,
-            dc.DutchConcepts.CSV_DIR,
+            dc.DutchConceptsCleaner.CSV_DIR,
             "exemplar feature judgments",
         )
 
@@ -41,7 +43,7 @@ class Features:
 
             df = pd.read_csv(
                 csv_f,
-                encoding=dc.DutchConcepts.ENCODING,
+                encoding=dc.DutchConceptsCleaner.ENCODING,
                 header=None,
                 dtype="unicode",
                 index_col=0,
@@ -87,14 +89,20 @@ class Features:
                     f"*{self.feature_type.value}*{result.group(3)}*-participant *.CSV",
                 )
             ):
-
                 df = pd.read_csv(
                     csv_f_participant,
-                    encoding=dc.DutchConcepts.ENCODING,
+                    encoding=dc.DutchConceptsCleaner.ENCODING,
                     header=None,
                     skipinitialspace=True,
                     dtype="unicode",
                 )
+
+                if 'exemplarMusicalInstrumentsDiagonalMatrices-participant 4' in csv_f_participant:
+                    # Handle missing colum in one original file
+                    df.insert(loc=1, column=666, value=LABEL_HOTFIX)
+                    df.columns = range(df.shape[1])
+                    df.dropna(axis=0, inplace=True)
+                
                 df = self.__clean_features_dataframe(df)
                 frequencies = df["freq"]
                 df.drop("freq", axis=1, inplace=True)
@@ -104,7 +112,7 @@ class Features:
 
             df = pd.read_csv(
                 csv_f,
-                encoding=dc.DutchConcepts.ENCODING,
+                encoding=dc.DutchConceptsCleaner.ENCODING,
                 header=None,
                 skipinitialspace=True,
                 dtype="unicode",
@@ -149,7 +157,7 @@ class Features:
                 )
             ):
 
-                df = pd.read_csv(csv_f, encoding=dc.DutchConcepts.ENCODING, header=None)
+                df = pd.read_csv(csv_f, encoding=dc.DutchConceptsCleaner.ENCODING, header=None)
 
                 df = self.__clean_features_dataframe(df)
                 frequencies = df["freq"]
@@ -158,7 +166,7 @@ class Features:
 
                 respondents[f"respondent {csv_f_participant[-5]}"] = df
 
-            df = pd.read_csv(csv_f, encoding=dc.DutchConcepts.ENCODING, header=None)
+            df = pd.read_csv(csv_f, encoding=dc.DutchConceptsCleaner.ENCODING, header=None)
 
             df = self.__clean_features_dataframe(df)
             frequencies = df["freq"]

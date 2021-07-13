@@ -1,14 +1,14 @@
 import os
 
-import dutch_concepts as dc
-import dutch_concepts.judgements as dcj
+import dutch_concepts_cleaner as dc
+import dutch_concepts_cleaner.judgements as dcj
 
 
 class Judgements:
     def __init__(self, dataset):
         self.dataset = dataset
         self.sub_dataset_dir = os.path.join(
-            self.dataset.dataset_dir, dc.DutchConcepts.CSV_DIR, "exemplar judgments"
+            self.dataset.dataset_dir, dc.DutchConceptsCleaner.CSV_DIR, "exemplar judgments"
         )
 
         self.typicality = dcj.TypicalityLoader(self).load()

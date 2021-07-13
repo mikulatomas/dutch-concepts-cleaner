@@ -1,8 +1,8 @@
 import pytest
-from dutch_concepts import DutchConcepts
+from dutch_concepts_cleaner import DutchConceptsCleaner
 
-dc_en = DutchConcepts(root='tests', download=True, language='en')
-dc_nl = DutchConcepts(root='tests', download=True, language='nl')
+dc_en = DutchConceptsCleaner(root='tests', download=True, language='en')
+dc_nl = DutchConceptsCleaner(root='tests', download=True, language='nl')
 
 
 @pytest.mark.parametrize(

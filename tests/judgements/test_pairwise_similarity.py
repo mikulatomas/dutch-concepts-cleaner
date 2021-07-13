@@ -1,5 +1,5 @@
 import pytest
-from dutch_concepts import DutchConcepts
+from dutch_concepts_cleaner import DutchConceptsCleaner
 
 
 def test_pairwise_similarity_same_labels(dc_languages):

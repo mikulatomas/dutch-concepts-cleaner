@@ -34,9 +34,9 @@ setup(
     long_description_content_type='text/markdown',
     include_package_data=True,
     keywords='concepts, dataset, semantic, dutch',
-    name='dutch_concepts',
+    name='dutch_concepts_cleaner',
     packages=find_packages(
-        include=['dutch_concepts', 'dutch_concepts.*']),
+        include=['dutch_concepts_cleaner', 'dutch_concepts_cleaner.*']),
     url='https://github.com/mikulatomas/dutch-concepts',
     version=__version__,
     zip_safe=False,

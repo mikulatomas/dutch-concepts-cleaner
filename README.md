@@ -9,10 +9,10 @@ Names of the exemplars and attributes are heavily corrected. All corrections are
 ## Usage
 
 ```python
-from dutch_concepts import DutchConcepts, Domain
+from dutch_concepts_cleaner import DutchConceptsCleaner, Domain
 
 # Download original dataset into root folder and use english translation.
-dataset = DutchConcepts(root='', download=True, language='en')
+dataset = DutchConceptsCleaner(root='', download=True, language='en')
 
 # Experiment data related to category based features for animal domain
 animal_domain = dataset.category_features.domain[Domain.ANIMAL]
@@ -27,9 +27,9 @@ animal_domain.frequencies
 ## What is avaliable
 
 ```python
-from dutch_concepts import DutchConcepts
+from dutch_concepts_cleaner import DutchConceptsCleaner
 
-dataset = DutchConcepts(root='', download=True, language='en')
+dataset = DutchConceptsCleaner(root='', download=True, language='en')
 
 # All category and domain category-based features
 dataset.category_features.category

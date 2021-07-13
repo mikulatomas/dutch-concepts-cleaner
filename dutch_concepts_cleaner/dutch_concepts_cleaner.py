@@ -6,15 +6,15 @@ import logging
 
 from glob import glob
 
-import dutch_concepts.judgements as ej
-import dutch_concepts.features as ef
+import dutch_concepts_cleaner.judgements as ej
+import dutch_concepts_cleaner.features as ef
 
 from .enums import FeatureType
 
 
-class DutchConcepts():
+class DutchConceptsCleaner():
     URL = 'https://static-content.springer.com/esm/art%3A10.3758%2FBRM.40.4.1030/MediaObjects/DeDeyne-BRM-2008b.zip'
-    DIR_NAME = 'dutch_concepts'
+    DIR_NAME = 'dutch_concepts_cleaner'
     ZIP_NAME = 'archive.zip'
     CSV_DIR = 'cvsdata'
     ENCODING = 'ISO-8859-1'
@@ -24,7 +24,7 @@ class DutchConcepts():
         if language not in ['en', 'nl']:
             raise ValueError("Wrong language, 'en' and 'nl' is supported.")
         self.language = language
-        self.dataset_dir = os.path.join(self.root, DutchConcepts.DIR_NAME)
+        self.dataset_dir = os.path.join(self.root, DutchConceptsCleaner.DIR_NAME)
 
         if not os.path.exists(self.dataset_dir):
             os.makedirs(self.dataset_dir)
@@ -48,12 +48,12 @@ class DutchConcepts():
             self, feature_type=FeatureType.CATEGORY)
 
     def __download(self):
-        with urllib.request.urlopen(DutchConcepts.URL) as f:
-            with open(os.path.join(self.root, DutchConcepts.ZIP_NAME), 'wb') as out_f:
+        with urllib.request.urlopen(DutchConceptsCleaner.URL) as f:
+            with open(os.path.join(self.root, DutchConceptsCleaner.ZIP_NAME), 'wb') as out_f:
                 out_f.write(f.read())
 
     def __extract(self):
-        with zipfile.ZipFile(os.path.join(self.root, DutchConcepts.ZIP_NAME), 'r') as zip_f:
+        with zipfile.ZipFile(os.path.join(self.root, DutchConceptsCleaner.ZIP_NAME), 'r') as zip_f:
             zip_f.extractall(self.dataset_dir)
 
         for subdir, _, files in os.walk(self.dataset_dir):
@@ -71,4 +71,4 @@ class DutchConcepts():
 
                     os.remove(zip_path)
 
-        os.remove(os.path.join(self.root, DutchConcepts.ZIP_NAME))
+        os.remove(os.path.join(self.root, DutchConceptsCleaner.ZIP_NAME))
