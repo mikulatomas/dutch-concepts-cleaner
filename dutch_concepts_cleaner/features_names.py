@@ -92,4 +92,6 @@ FEATURE_TRANSLATION_FIXES = {
     "wordt gespeeld op een veld": "is played on a field",
     # consistency: originally "has a fur (in dutch: vacht)"
     "heeft een vacht": "has a fur (vacht)",
+    # typo: sometimes "is thik" is used instead of "is thick"
+    "is dik": "is thick",
 }

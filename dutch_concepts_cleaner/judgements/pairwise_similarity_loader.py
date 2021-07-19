@@ -131,17 +131,17 @@ class PairwiseSimilarityLoader:
 
         # ensure -1 value in whole column or row in case that exemplar is unknown
         unkwnown_exemplars_columns = []
-        for c in df.columns:
+        for c in df.columns[1:]:
             if (df[c].values >= -1).all() and (df[c].values <= 0).all():
                 unkwnown_exemplars_columns.append(c)
 
         unkwnown_exemplars_rows = []
-        for c in df.index:
-            if (df[c].values >= -1).all() and (df[c].values <= 0).all():
+        for c in df.index[:-1]:
+            if (df.loc[c].values >= -1).all() and (df.loc[c].values <= 0).all():
                 unkwnown_exemplars_rows.append(c)
 
         for e in unkwnown_exemplars_columns:
-            df.loc[e][df.loc[e] > 0] = -1
+            df[e][df[e] > 0] = -1
         
         for e in unkwnown_exemplars_rows:
             df.loc[e][df.loc[e] > 0] = -1

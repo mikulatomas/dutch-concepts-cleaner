@@ -156,8 +156,8 @@ class Features:
                     f"*{self.feature_type.value.capitalize()}*-participant *.CSV",
                 )
             ):
-
-                df = pd.read_csv(csv_f, encoding=dc.DutchConceptsCleaner.ENCODING, header=None)
+                print(csv_f_participant)
+                df = pd.read_csv(csv_f_participant, encoding=dc.DutchConceptsCleaner.ENCODING, header=None)
 
                 df = self.__clean_features_dataframe(df)
                 frequencies = df["freq"]
@@ -237,6 +237,7 @@ class Features:
         df.index.name = "feature"
         df.columns.name = "exemplar"
 
+        df = df.fillna(0)
         df = df.astype(int)
 
         # Exemplar names fix
