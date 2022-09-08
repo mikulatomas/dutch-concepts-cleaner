@@ -15,6 +15,7 @@ EXEMPLAR_TRANSLATION_FIXES = {
     # duplicity: "brommer", "moto" both translated as "motorbike"
     "brommer": "motorbike (brommer)",
     "moto": "motorbike (moto)",
+    "bromfiets": "scooter",
     # duplicity: "camion", "vrachtwagen" are both "truck",
     "camion": "truck (camion)",
     "vrachtwagen": "truck (vrachtwagen)",
@@ -61,10 +62,10 @@ EXEMPLAR_TRANSLATION_FIXES = {
     # duplicity: "lychee" is translated both as "lychee" and "litchi"
     "lychee": "lychee",
     # duplicity: "clementine" is translated both as "clementine" and "mandarine"
-    "clementine": "mandarine"
+    "clementine": "mandarine",
     
     # duplicity: "brommer", "bromfiets" are both "scooter" because of the rule above
     # ?? check
-    # "bromfiets": "scooter (bromfiets)",
+    "bromfiets": "scooter",
     # "brommer": "scooter (brommer)",
 }

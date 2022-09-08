@@ -40,9 +40,8 @@ class PairwiseSimilarityLoader:
                 encoding=dc.DutchConceptsCleaner.ENCODING,
                 header=None,
                 skipinitialspace=True,
-                error_bad_lines=False,
                 dtype="unicode",
-                warn_bad_lines=False,
+                on_bad_lines="skip",
             )
 
             df = self.__clean_dataframe(df, category_name)
