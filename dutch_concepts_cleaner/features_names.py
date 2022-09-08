@@ -58,7 +58,6 @@ FEATURE_TRANSLATION_FIXES = {
     # duplicity of "has ribbons"
     "heeft linten": "has ribbons (linten)",
     "heeft bandjes": "has ribbons (bandjes)",
-    # duplicity of "has ribbons"
     "heeft spaghettibandjes": "has ribbons (spaghettibandjes)",
     # duplicity of "is pleasant"
     "is aangenaam": "is pleasant (aangenaam)",

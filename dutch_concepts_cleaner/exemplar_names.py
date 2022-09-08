@@ -15,9 +15,6 @@ EXEMPLAR_TRANSLATION_FIXES = {
     # duplicity: "brommer", "moto" both translated as "motorbike"
     "brommer": "motorbike (brommer)",
     "moto": "motorbike (moto)",
-    # duplicity: "brommer", "bromfiets" are both "scooter" because of the rule above
-    "bromfiets": "scooter (bromfiets)",
-    "brommer": "scooter (brommer)",
     # duplicity: "camion", "vrachtwagen" are both "truck",
     "camion": "truck (camion)",
     "vrachtwagen": "truck (vrachtwagen)",
@@ -37,8 +34,8 @@ EXEMPLAR_TRANSLATION_FIXES = {
     # lowercase (originaly Zeppelin)
     "zeppelin": "zeppelin",
     # unify translation: "engelsesleutel" is "adjustable spanner" or "screw wrench"
-    "engelse sleutel": "adjustable spanner (engelse sleutel)",
-    "engelse sleutel": "screw wrench (engelse sleutel)",
+    "engelse sleutel": "adjustable spanner",
+    # "engelse sleutel": "screw wrench (engelse sleutel)",
     # translation error: "houtklem" is tranlated in one file as "spanner" instead of "clamp"s
     "houtklem": "clamp",
     # duplicity: "plamuurmes" is "filling-knife" and "filling knife"
@@ -65,4 +62,9 @@ EXEMPLAR_TRANSLATION_FIXES = {
     "lychee": "lychee",
     # duplicity: "clementine" is translated both as "clementine" and "mandarine"
     "clementine": "mandarine"
+    
+    # duplicity: "brommer", "bromfiets" are both "scooter" because of the rule above
+    # ?? check
+    # "bromfiets": "scooter (bromfiets)",
+    # "brommer": "scooter (brommer)",
 }
