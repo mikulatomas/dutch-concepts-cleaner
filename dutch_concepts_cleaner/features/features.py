@@ -153,10 +153,9 @@ class Features:
                 os.path.join(
                     self._features_dir,
                     "*",
-                    f"*{self.feature_type.value.capitalize()}*-participant *.CSV",
+                    f"*{domain_name.capitalize()}*{self.feature_type.value.capitalize()}*-participant *.CSV",
                 )
             ):
-                print(csv_f_participant)
                 df = pd.read_csv(csv_f_participant, encoding=dc.DutchConceptsCleaner.ENCODING, header=None)
 
                 df = self.__clean_features_dataframe(df)
