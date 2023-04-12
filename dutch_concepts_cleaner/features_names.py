@@ -1,6 +1,16 @@
 FEATURE_NAMES_FIXES = {
     # duplicity: "leeft in afrika", "leeft in Afrika"
     "leeft in afrika": "leeft in Afrika",
+    # missing '
+    "bebouwde kom' is woonwijk": "bebouwde 'kom' is woonwijk",
+    # duplicity
+    "dient om muren en plafond effen te maken": "dient om muren en plafond worden effen te maken",
+    # multiple possible translation
+    "wordt al zittend bespeeld": "wordt al zittend bespeelt",
+    # multiple possible translation
+    "wordt gecombineerd met andere instrumenten": "wordt gecombineert met andere instrumenten",
+    # error in spelling of aggressief
+    "kan aggressief zijn": "kan agressief zijn"
 }
 
 FEATURE_TRANSLATION_FIXES = {
@@ -93,4 +103,14 @@ FEATURE_TRANSLATION_FIXES = {
     "heeft een vacht": "has a fur (vacht)",
     # typo: sometimes "is thik" is used instead of "is thick"
     "is dik": "is thick",
+    # consistency: "can be killed with a fly swatter" and "can be killed by a fly swatter"
+    "je kan ze doden met een vliegenmepper": "can be killed with a fly swatter",
+    # consistency: "can cause a lot of trouble" and "can cause much hinder"
+    "kan veel last veroorzaken": "can cause much hinder",
+    # consistency: "often used at camp sites" and "often played at camp sites"
+    "wordt vaak gebruikt aan het kampvuur": "often used at camp sites",
+    # typo: "kraait" is once translated as "x"
+    "kraait": "crows",
 }
+
+

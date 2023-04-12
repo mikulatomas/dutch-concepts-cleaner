@@ -9,6 +9,8 @@ EXEMPLAR_NAMES_FIXES = {
     "mitraillette": "mitrailleur",
     # duplicity: "pad", "pad (dier)" -> "pad"
     "pad (dier)": "pad",
+    # duplicity:
+    "recorder": "fluit",
 }
 
 EXEMPLAR_TRANSLATION_FIXES = {
@@ -22,7 +24,7 @@ EXEMPLAR_TRANSLATION_FIXES = {
     # duplicity: "koevoet", "breekijzer" are both "crowbar"
     "koevoet": "crowbar (koevoet)",
     "breekijzer": "crowbar (breekijzer)",
-    # translation error: "fluit" is sometimes translated as "flute" insteda of "recorder"
+    # translation error: "fluit" is sometimes translated as "flute" instead of "recorder"
     "fluit": "recorder",
     # typo: "cabary" vs "canary"
     "kanarie": "canary",
